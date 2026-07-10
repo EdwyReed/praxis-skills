@@ -1,0 +1,4 @@
+interface:
+  display_name: "Praxis Init"
+  short_description: "Initialize Praxis context and skill dependencies"
+  default_prompt: "Use $praxis-init to initialize or audit this project's .praxis/project.md and external skill dependency manifest."

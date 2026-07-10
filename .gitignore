@@ -1,2 +1,5 @@
 .DS_Store
 /plans
+__pycache__/
+*.py[cod]
+/tmp/codex-workflows-source/

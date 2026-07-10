@@ -1,0 +1,27 @@
+{
+  "feature_id": "002-praxis-project-context",
+  "source": "user request",
+  "complexity": "large",
+  "complexity_reason": "Adds a new globally distributed skill, a canonical project contract, mandatory gates across multiple workflow entry points, package mirrors, documentation, global prompt integration, and audits.",
+  "frontend": {
+    "applicable": false,
+    "status": "not-applicable",
+    "primary_skill": null,
+    "rationale": "This feature governs project context and design routing but does not create a visual frontend."
+  },
+  "project_context": {
+    "status": "needs-confirmation",
+    "profile_sha256": "11b8c9d6fb62bd1772afc6d96e6ce3b1f1862836f76c8ba20800f6e1bc809b87",
+    "validated_at": "2026-07-10T14:19:47.1193986+03:00"
+  },
+  "phases": {
+    "refinement": "done",
+    "research": "done",
+    "design": "done",
+    "design_review": "done",
+    "plan": "done",
+    "implement": "done",
+    "docs": "done",
+    "pr": "skipped"
+  }
+}

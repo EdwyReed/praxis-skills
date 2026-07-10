@@ -1,0 +1,21 @@
+# Example Codex configuration for users of this workflow package.
+# Copy relevant sections into ~/.codex/config.toml or a project-local trusted config.
+
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+
+[features]
+# Optional. Required only when a workflow explicitly asks Codex to use subagents.
+multi_agent = true
+
+# Example MCP declarations. Fill in real commands, URLs, and secrets outside this repo.
+# [mcp_servers.sentry]
+# command = "npx"
+# args = ["-y", "@sentry/mcp-server"]
+#
+# [mcp_servers.context7]
+# command = "npx"
+# args = ["-y", "@upstash/context7-mcp"]
+#
+# [mcp_servers.openaiDeveloperDocs]
+# url = "https://developers.openai.com/mcp"

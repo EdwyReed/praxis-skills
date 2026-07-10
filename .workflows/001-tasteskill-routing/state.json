@@ -1,0 +1,22 @@
+{
+  "feature_id": "001-tasteskill-routing",
+  "source": "user request",
+  "complexity": "small",
+  "complexity_reason": "Policy-only change affecting four workflow skills, embedded references, documentation, and audits without runtime dependencies.",
+  "frontend": {
+    "applicable": false,
+    "status": "not-applicable",
+    "primary_skill": null,
+    "rationale": "This change defines frontend routing but does not itself create or redesign a frontend."
+  },
+  "phases": {
+    "refinement": "skipped",
+    "research": "done",
+    "design": "skipped",
+    "design_review": "skipped",
+    "plan": "skipped",
+    "implement": "done",
+    "docs": "done",
+    "pr": "skipped"
+  }
+}
