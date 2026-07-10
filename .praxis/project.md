@@ -10,9 +10,9 @@ updated: 2026-07-10
 
 # Core Contract
 
-**Concept:** Praxis Skills is a Codex-native, artifact-driven engineering workflow package. It turns ambiguous product and engineering requests into inspectable refinement, research, design, planning, implementation, review, documentation, QA, and PR artifacts without depending on hidden orchestration.
+**Concept:** Praxis Skills is a Codex-first, agent-portable, artifact-driven engineering workflow package. It turns ambiguous product and engineering requests into inspectable refinement, research, design, planning, implementation, review, documentation, QA, and PR artifacts without depending on hidden orchestration.
 
-**Primary outcomes:** Preserve a coherent end-to-end delivery lifecycle; keep every phase independently usable; distribute the same behavior through repo-local skills, user-global skills, and a Codex plugin package.
+**Primary outcomes:** Preserve a coherent end-to-end delivery lifecycle; keep every phase independently usable; verify Codex as the primary integration while keeping the Markdown skill and artifact core portable to compatible agents; distribute the Codex integration through repo-local skills, user-global skills, and a plugin package.
 
 **Experience:** Praxis should feel disciplined, evidence-first, transparent, calm, and proportionate to task complexity. It should make decisions and checkpoints visible without becoming ceremonial or forcing a large workflow onto small work.
 
@@ -37,6 +37,7 @@ The package is composed of `.agents/skills`, shared and embedded references, plu
 - Make external nonstandard skill dependencies reproducible through bounded `.praxis/skills.yaml` manifests when they exist.
 - Keep frontend art direction explicit through one selected primary visual skill.
 - Preserve parity between repo-local, plugin, and user-global skill installations.
+- Keep workflow contracts agent-portable where practical while treating Codex as the primary maintained and verified runtime.
 - Prefer Codex-native skills and `AGENTS.md` over legacy slash-command surfaces.
 - Strengthen deterministic audits around every packaging or routing contract.
 
@@ -46,6 +47,7 @@ The package is composed of `.agents/skills`, shared and embedded references, plu
 - Replacing repository-specific architecture, coding conventions, or product decisions.
 - Bundling or automatically installing unrelated design-skill families.
 - Requiring agent teams for workflows that can run inline.
+- Claiming compatibility with an agent runtime that has not been tested against Praxis discovery, tools, and workflow behavior.
 
 ## Experience Direction
 
@@ -98,6 +100,7 @@ The package is composed of `.agents/skills`, shared and embedded references, plu
 - Run `pwsh tests/audits/run-all.ps1` before claiming package completion.
 - Keep user-facing project profiles concise and require explicit confirmation of inferred direction.
 - Never inventory all locally installed skills or automatically install external packages from a project manifest.
+- Keep runtime-neutral workflow semantics separate from Codex-specific discovery, plugin, and connector packaging.
 
 ## Open Questions
 
@@ -111,4 +114,4 @@ The package is composed of `.agents/skills`, shared and embedded references, plu
 | Status | confirmed |
 | Confirmed by | Project owner |
 | Confirmed on | 2026-07-10 |
-| Material corrections | Confirmed project profile and added the bounded, consent-gated project skill dependency manifest architecture |
+| Material corrections | Confirmed Codex-first and agent-portable positioning; added bounded, consent-gated project skill dependency manifests |
