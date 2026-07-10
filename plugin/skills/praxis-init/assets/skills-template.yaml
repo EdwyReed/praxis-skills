@@ -1,0 +1,14 @@
+schema: praxis-skills/v1
+
+packages:
+  - id: package-family
+    requirement: required
+    role: primary-project-responsibility
+    source:
+      type: git
+      url: https://github.com/owner/repository
+      revision: v1.0.0
+    skills:
+      - selected-entrypoint
+    rationale: Required to reproduce the confirmed project direction.
+    applies_when: Work requires this project responsibility.

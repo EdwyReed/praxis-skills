@@ -1,0 +1,17 @@
+interface:
+  display_name: "Praxis Skills"
+  short_description: "Codex-native feature, research, design, implementation, QA, docs, and PR workflows."
+  brand_color: "#2563EB"
+  default_prompt: "Use the Codex workflow skills for this task."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sentry"
+      description: "Optional Sentry MCP server for production issue triage and post-fix checks."
+    - type: "mcp"
+      value: "context7"
+      description: "Optional documentation MCP server for framework/library lookups."
+    - type: "mcp"
+      value: "openaiDeveloperDocs"
+      description: "Optional OpenAI docs MCP server for Codex and OpenAI documentation checks."

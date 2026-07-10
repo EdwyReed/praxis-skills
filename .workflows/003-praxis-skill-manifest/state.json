@@ -1,0 +1,28 @@
+{
+  "feature_id": "003-praxis-skill-manifest",
+  "source": "user-approved architecture",
+  "complexity": "medium",
+  "complexity_reason": "Extends the project contract, validator, workflow gates, plugin mirror, documentation, audits, and global installation behavior.",
+  "frontend": {
+    "applicable": false,
+    "status": "not-applicable",
+    "primary_skill": null,
+    "rationale": "This is workflow metadata, not a visual frontend change."
+  },
+  "project_context": {
+    "status": "confirmed",
+    "profile_sha256": "63ce18b4aa74c09d7dee857546c04d1b0dc3b53715654603c58e8b5e1ae5e59b",
+    "skills_manifest_sha256": null,
+    "validated_at": "2026-07-10T14:38:32.4283582+03:00"
+  },
+  "phases": {
+    "refinement": "done",
+    "research": "done",
+    "design": "done",
+    "design_review": "done",
+    "plan": "done",
+    "implement": "done",
+    "docs": "done",
+    "pr": "skipped"
+  }
+}

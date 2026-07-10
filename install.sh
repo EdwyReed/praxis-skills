@@ -1,66 +1,54 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
-CLAUDE_DIR="$HOME/.claude"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+MODE_REPO=0
+MODE_USER=0
+MODE_PLUGIN=0
+DRY_RUN=0
+FORCE=0
 
-DIRS=(commands agents rules scenarios skills contexts templates)
-
-echo "AMO Claude Workflows — Install"
-echo "Source: $REPO_DIR"
-echo "Target: $CLAUDE_DIR"
-echo ""
-
-if [ ! -d "$CLAUDE_DIR" ]; then
-  echo "Error: $CLAUDE_DIR does not exist. Is Claude Code installed?"
-  exit 1
-fi
-
-installed=0
-skipped=0
-
-for dir in "${DIRS[@]}"; do
-  source="$REPO_DIR/$dir"
-
-  if [ ! -d "$source" ]; then
-    echo "  SKIP  $dir/ (not found in repo)"
-    continue
-  fi
-
-  # Ensure target directory exists
-  mkdir -p "$CLAUDE_DIR/$dir"
-
-  # Link each item (file or subdirectory) inside the directory
-  for item in "$source"/*; do
-    [ -e "$item" ] || continue
-
-    name="$(basename "$item")"
-    target="$CLAUDE_DIR/$dir/$name"
-
-    if [ -L "$target" ]; then
-      current=$(readlink "$target")
-      if [ "$current" = "$item" ]; then
-        echo "  OK    $dir/$name (already linked)"
-        ((installed++))
-        continue
-      else
-        echo "  SKIP  $dir/$name (symlink exists -> $current)"
-        ((skipped++))
-        continue
-      fi
-    fi
-
-    if [ -e "$target" ]; then
-      echo "  SKIP  $dir/$name (already exists)"
-      ((skipped++))
-      continue
-    fi
-
-    ln -s "$item" "$target"
-    echo "  LINK  $dir/$name -> $item"
-    ((installed++))
-  done
+for arg in "$@"; do
+  case "$arg" in
+    --repo) MODE_REPO=1 ;;
+    --user) MODE_USER=1 ;;
+    --plugin) MODE_PLUGIN=1 ;;
+    --dry-run) DRY_RUN=1 ;;
+    --force) FORCE=1 ;;
+    *) echo "Unknown argument: $arg" >&2; exit 2 ;;
+  esac
 done
 
-echo ""
-echo "Done: $installed linked, $skipped skipped."
+if [ "$MODE_REPO$MODE_USER$MODE_PLUGIN" = "000" ]; then
+  MODE_REPO=1
+fi
+
+copy_dir() {
+  src="$1"
+  dst="$2"
+  if [ "$DRY_RUN" = "1" ]; then echo "DRY copy $src -> $dst"; return; fi
+  if [ -e "$dst" ] && [ "$FORCE" = "1" ]; then rm -rf "$dst"; fi
+  if [ -e "$dst" ]; then echo "SKIP existing $dst"; return; fi
+  cp -R "$src" "$dst"
+}
+
+if [ "$MODE_REPO" = "1" ]; then
+  test -d "$ROOT/.agents/skills" || { echo "Missing .agents/skills" >&2; exit 1; }
+  echo "Repo-local skills are present."
+fi
+
+if [ "$MODE_USER" = "1" ]; then
+  target="$HOME/.agents/skills"
+  if [ "$DRY_RUN" = "1" ]; then echo "DRY mkdir $target"; else mkdir -p "$target"; fi
+  for skill in "$ROOT"/.agents/skills/*; do
+    [ -d "$skill" ] || continue
+    copy_dir "$skill" "$target/$(basename "$skill")"
+  done
+fi
+
+if [ "$MODE_PLUGIN" = "1" ]; then
+  test -f "$ROOT/plugin/.codex-plugin/plugin.json" || { echo "Missing plugin manifest" >&2; exit 1; }
+  echo "Plugin manifest is present. Use install.ps1 for marketplace JSON generation on Windows."
+fi
+
+echo "Install step complete."
