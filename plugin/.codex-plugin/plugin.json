@@ -1,6 +1,6 @@
 {
   "name": "praxis-skills",
-  "version": "0.3.0",
+  "version": "0.4.0-beta.1",
   "description": "Codex-native workflow package with mandatory project direction, reproducible external skill dependencies, feature development, research, design, implementation, QA, documentation, Sentry triage, and PR preparation.",
   "author": {
     "name": "EdwyReed"

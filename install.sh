@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+test -f "$ROOT/distribution/manifest.json" || { echo "Missing distribution/manifest.json" >&2; exit 1; }
 MODE_REPO=0
 MODE_USER=0
 MODE_PLUGIN=0
@@ -34,6 +35,7 @@ copy_dir() {
 
 if [ "$MODE_REPO" = "1" ]; then
   test -d "$ROOT/.agents/skills" || { echo "Missing .agents/skills" >&2; exit 1; }
+  test -d "$ROOT/plugin/skills" || { echo "Missing plugin/skills" >&2; exit 1; }
   echo "Repo-local skills are present."
 fi
 

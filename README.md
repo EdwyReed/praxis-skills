@@ -147,43 +147,49 @@ Praxis never fills this file from a contributor's complete installed-skill inven
 
 - a coding agent capable of loading repository skills and files; Codex is the primary tested target;
 - Git for repository and history-aware workflows;
-- PowerShell 7 on Windows, or Bash on macOS/Linux;
+- Node.js 22 or newer for the recommended npm installer;
+- PowerShell 7 on Windows, or Bash on macOS/Linux, only for checkout-based fallback installation;
 - Python 3 for deterministic project-context validation.
 
 Sentry, Context7, and OpenAI documentation MCP servers are optional. The workflows degrade to available tools when those integrations are not configured. See [`docs/how/configure-mcp.md`](docs/how/configure-mcp.md).
 
-### User-global installation
+### Recommended: npm installer
 
-This is the most convenient option for making Praxis available to Codex in every repository.
+Install Praxis for all repositories available to your user account:
+
+```bash
+npx praxis-skills install --user
+```
+
+Install into one repository:
+
+```bash
+npx praxis-skills install --repo .
+```
+
+The CLI supports `install`, `doctor`, `uninstall`, `list`, and `version`. It builds an exact plan from `distribution/manifest.json`, owns only the listed Praxis directories, and preserves unrelated skills. Existing targets are skipped unless `--force` is used. Destructive operations require confirmation or an explicit `--yes`; use `--dry-run` to preview them.
+
+```bash
+npx praxis-skills doctor --user
+npx praxis-skills install --user --force --yes
+npx praxis-skills uninstall --user --dry-run
+```
+
+Start a new Codex task or restart the application after installing or updating skills so the catalog is refreshed.
+
+### Checkout-based fallback
+
+The repository scripts remain available for contributors, offline source checkouts, and environments where Node is unavailable:
 
 ```powershell
 git clone https://github.com/EdwyReed/praxis-skills.git
 cd praxis-skills
 pwsh ./install.ps1 --user --force
+pwsh ./install.ps1 --repo
 pwsh ./verify-install.ps1
 ```
 
-On macOS or Linux:
-
-```bash
-git clone https://github.com/EdwyReed/praxis-skills.git
-cd praxis-skills
-./install.sh --user --force
-```
-
-Skills are copied to `~/.agents/skills`. Without `--force`, existing target folders are preserved and reported as skipped. With `--force`, both installers replace current Praxis-owned targets; the PowerShell installer also removes known legacy package names. Neither installer deletes unrelated skills.
-
-Start a new Codex task or restart the application after installing or updating skills so the catalog is refreshed.
-
-### Repo-local use
-
-Inside this checkout, Codex discovers `.agents/skills` directly. The repo mode verifies that the local skill surface exists without copying it elsewhere. Another agent may be able to consume the same skill folders, but its discovery convention may differ:
-
-```powershell
-pwsh ./install.ps1 --repo
-```
-
-For using Praxis across unrelated repositories, prefer the user-global installation or plugin packaging.
+On macOS or Linux, use `./install.sh --user --force`. In a source checkout, repo mode validates the canonical `.agents/skills` tree; unlike `npx praxis-skills install --repo`, it does not copy skills into another repository.
 
 ### Local plugin packaging
 
@@ -240,6 +246,8 @@ See [`references/rules/frontend-skill-routing.md`](references/rules/frontend-ski
 | `.workflows/{feature-id}/` | Refinement, research, design, plan, implementation, and review evidence |
 | `references/` | Shared roles, rules, contexts, scenarios, templates, and historical source docs |
 | `plugin/` | Installable Codex plugin mirror and manifest |
+| `distribution/manifest.json` | Exact npm payload, version, current skills, legacy names, and receipt contract |
+| `bin/` and `lib/` | Zero-dependency cross-platform npm installer CLI |
 | `docs/` | Installation, migration, architecture, and packaging documentation |
 | `tests/audits/` | Naming, parity, reference, routing, context, manifest, and install checks |
 | `install.ps1` / `install.sh` | Repo, user, and plugin setup surfaces |
@@ -251,6 +259,9 @@ The plugin and repo-local skill trees intentionally mirror one another. Workflow
 Run the complete package audit before publishing changes:
 
 ```powershell
+node --version
+npm test
+npm run pack:check
 pwsh ./tests/audits/run-all.ps1
 ```
 
@@ -272,27 +283,25 @@ pwsh ./verify-install.ps1
 
 ## Updating and uninstalling
 
-Pull the latest source and run the user installer with `--force`:
+Update a user installation:
 
-```powershell
-git pull
-pwsh ./install.ps1 --user --force
-pwsh ./verify-install.ps1
+```bash
+npx praxis-skills install --user --force --yes
 ```
 
 Preview removal:
 
-```powershell
-pwsh ./uninstall.ps1 --user --plugin --dry-run
+```bash
+npx praxis-skills uninstall --user --dry-run
 ```
 
-Remove user-global Praxis skills and the local marketplace entry:
+Remove npm-installed user-global Praxis skills:
 
-```powershell
-pwsh ./uninstall.ps1 --user --plugin
+```bash
+npx praxis-skills uninstall --user --yes
 ```
 
-The uninstaller targets only current Praxis directories, known legacy package names, and the generated local marketplace file.
+The checkout-based `uninstall.ps1` remains available for local plugin marketplace entries. Both paths target only current Praxis directories, known legacy package names, and their own generated metadata.
 
 ## Migration and further documentation
 
