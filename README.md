@@ -157,8 +157,8 @@ Sentry, Context7, and OpenAI documentation MCP servers are optional. The workflo
 This is the most convenient option for making Praxis available to Codex in every repository.
 
 ```powershell
-git clone https://github.com/EdwyReed/codex-workflows.git
-cd codex-workflows
+git clone https://github.com/EdwyReed/praxis-skills.git
+cd praxis-skills
 pwsh ./install.ps1 --user --force
 pwsh ./verify-install.ps1
 ```
@@ -166,8 +166,8 @@ pwsh ./verify-install.ps1
 On macOS or Linux:
 
 ```bash
-git clone https://github.com/EdwyReed/codex-workflows.git
-cd codex-workflows
+git clone https://github.com/EdwyReed/praxis-skills.git
+cd praxis-skills
 ./install.sh --user --force
 ```
 
