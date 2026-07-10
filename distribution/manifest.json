@@ -1,0 +1,28 @@
+{
+  "schema": "praxis-distribution/v1",
+  "packageName": "praxis-skills",
+  "version": "0.4.0-beta.1",
+  "payload": "plugin/skills",
+  "sourceSkills": ".agents/skills",
+  "receiptName": "praxis-skills.json",
+  "skills": [
+    "praxis-adr-template", "praxis-ai-debug", "praxis-api-contracts-template",
+    "praxis-design", "praxis-design-template", "praxis-docs-suite",
+    "praxis-feature-flow", "praxis-implement", "praxis-init",
+    "praxis-owasp-top-10", "praxis-plan", "praxis-pr",
+    "praxis-qa-checklist", "praxis-refine", "praxis-research",
+    "praxis-security-audit-checklist", "praxis-sentry-triage",
+    "praxis-skill-from-git", "praxis-stoplight-docs", "praxis-system-profile",
+    "praxis-task-refinement", "praxis-tdd-approach",
+    "praxis-test-design-techniques"
+  ],
+  "legacySkills": [
+    "adr-template", "api-contracts-template", "codex-ai-debug", "codex-design",
+    "codex-docs-suite", "codex-feature-flow", "codex-implement", "codex-plan",
+    "codex-pr", "codex-qa-checklist", "codex-refine", "codex-research",
+    "codex-sentry-triage", "codex-skill-from-git", "codex-system-profile",
+    "design-template", "owasp-top-10", "security-audit-checklist",
+    "stoplight-docs", "task-refinement", "tdd-approach",
+    "test-design-techniques"
+  ]
+}

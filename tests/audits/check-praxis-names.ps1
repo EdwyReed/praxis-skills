@@ -5,6 +5,7 @@ $files = Get-ChildItem $Root -Recurse -File | Where-Object {
   $_.FullName -notmatch '\\.git\\' -and
   $_.FullName -notmatch '\\install.ps1$' -and
   $_.FullName -notmatch '\\uninstall.ps1$' -and
+  $_.FullName -notmatch '\\distribution\\manifest.json$' -and
   $_.FullName -notmatch '\\tests\\audits\\check-praxis-names.ps1$'
 }
 

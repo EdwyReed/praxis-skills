@@ -9,6 +9,7 @@ $scripts = @(
   "check-reference-links.ps1",
   "check-no-claude-only-surfaces.ps1",
   "check-plugin-manifest.ps1",
+  "check-npm-distribution.ps1",
   "check-install-dry-run.ps1"
 )
 

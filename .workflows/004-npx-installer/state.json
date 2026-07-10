@@ -1,0 +1,34 @@
+{
+  "feature_id": "004-npx-installer",
+  "source": "user request",
+  "complexity": "large",
+  "complexity_reason": "Introduces a public package format, cross-platform installer CLI, destructive-operation safety, distribution parity, npm release automation, provenance, documentation, and external account configuration.",
+  "frontend": {
+    "applicable": false,
+    "status": "not-applicable",
+    "primary_skill": null,
+    "rationale": "CLI and package distribution work has no visual frontend surface."
+  },
+  "project_context": {
+    "status": "confirmed",
+    "profile_sha256": "63d37125e5f1fff32abf66b5537de28d0ef0a8718de7dd6572aefa41642252cf",
+    "skills_manifest_sha256": null,
+    "validated_at": "2026-07-10"
+  },
+  "release": {
+    "local_candidate": "ready",
+    "version": "0.4.0-beta.1",
+    "public_publish": "pending-explicit-approval",
+    "trusted_publisher": "pending-first-publication"
+  },
+  "phases": {
+    "refinement": "done",
+    "research": "done",
+    "design": "done",
+    "design_review": "done",
+    "plan": "done",
+    "implement": "done",
+    "docs": "done",
+    "pr": "pending"
+  }
+}

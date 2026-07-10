@@ -1,8 +1,28 @@
 # Install Praxis Skills
 
-## Repo-local use
+## Recommended npm path
 
-The repository is usable directly from a checkout because Codex scans `.agents/skills` from the current working directory up to the repository root.
+Node.js 22 or newer is required. Install for the current user:
+
+```bash
+npx praxis-skills install --user
+npx praxis-skills doctor --user
+```
+
+Install into a repository's `.agents/skills` directory:
+
+```bash
+npx praxis-skills install --repo .
+npx praxis-skills doctor --repo .
+```
+
+Use `--target <skills-dir>` for a compatible agent with a different discovery location. Existing skill directories are skipped. Replacing them requires `--force` and confirmation, or `--force --yes` in automation. `--dry-run` never mutates or prompts, and `--json` provides machine-readable output.
+
+The npm CLI copies only directories listed by `distribution/manifest.json`. It has no install lifecycle script and performs no implicit project initialization.
+
+## Source-checkout fallback
+
+The repository is also usable directly because Codex scans `.agents/skills` from the current working directory up to the repository root. This mode validates the checkout rather than copying it into another repository.
 
 ```powershell
 pwsh ./install.ps1 --repo --dry-run
@@ -16,6 +36,8 @@ Install skills into your user skill directory:
 ```powershell
 pwsh ./install.ps1 --user
 ```
+
+On macOS or Linux use `./install.sh --user`. These scripts are compatibility fallbacks for source checkouts; prefer the npm CLI for normal installation.
 
 ## Plugin packaging
 

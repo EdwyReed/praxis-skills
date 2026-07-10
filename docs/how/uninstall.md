@@ -1,16 +1,24 @@
 # Uninstall Praxis Skills
 
-Use dry-run first:
+For an npm installation, preview the exact owned directories first:
 
-```powershell
-pwsh ./uninstall.ps1 --dry-run
+```bash
+npx praxis-skills uninstall --user --dry-run
 ```
 
-Then remove installed user-local skills or repo-local plugin marketplace entries created by this repository:
+Then remove them explicitly:
+
+```bash
+npx praxis-skills uninstall --user --yes
+npx praxis-skills uninstall --repo . --yes
+```
+
+For checkout-based installs or a local Codex plugin marketplace entry:
 
 ```powershell
+pwsh ./uninstall.ps1 --user --dry-run
 pwsh ./uninstall.ps1 --user
 pwsh ./uninstall.ps1 --plugin
 ```
 
-The uninstaller removes only paths matching this package's expected skill and plugin names.
+The uninstallers remove only current and known legacy names declared by Praxis. Unrelated skill directories are preserved.

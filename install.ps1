@@ -17,18 +17,15 @@ foreach ($arg in $args) {
 }
 
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$DistributionPath = Join-Path $Root "distribution/manifest.json"
+if (-not (Test-Path $DistributionPath)) { throw "Missing distribution manifest: $DistributionPath" }
+$Distribution = Get-Content -Raw $DistributionPath | ConvertFrom-Json
 $SkillSource = Join-Path $Root ".agents/skills"
 $PluginSource = Join-Path $Root "plugin"
 $RepoMarketplace = Join-Path $Root ".agents/plugins/marketplace.json"
 $UserSkillRoot = Join-Path $HOME ".agents/skills"
-$LegacyPackageSkills = @(
-  "adr-template", "api-contracts-template", "codex-ai-debug", "codex-design",
-  "codex-docs-suite", "codex-feature-flow", "codex-implement", "codex-plan",
-  "codex-pr", "codex-qa-checklist", "codex-refine", "codex-research",
-  "codex-sentry-triage", "codex-skill-from-git", "codex-system-profile",
-  "design-template", "owasp-top-10", "security-audit-checklist", "stoplight-docs",
-  "task-refinement", "tdd-approach", "test-design-techniques"
-)
+$CurrentPackageSkills = @($Distribution.skills)
+$LegacyPackageSkills = @($Distribution.legacySkills)
 
 if (-not $Repo -and -not $User -and -not $Plugin) {
   $Repo = $true
@@ -49,6 +46,11 @@ function CopyDirectory($Source, $Target) {
 if ($Repo) {
   Say "Checking repo-local Codex skills at $SkillSource"
   if (-not (Test-Path $SkillSource)) { throw "Missing .agents/skills" }
+  foreach ($name in $CurrentPackageSkills) {
+    if (-not (Test-Path (Join-Path $SkillSource "$name/SKILL.md"))) {
+      throw "Distribution manifest skill is missing from source: $name"
+    }
+  }
 }
 
 if ($User) {
@@ -61,8 +63,12 @@ if ($User) {
       }
     }
   }
-  Get-ChildItem -Directory $SkillSource | ForEach-Object {
-    CopyDirectory $_.FullName (Join-Path $UserSkillRoot $_.Name)
+  foreach ($name in $CurrentPackageSkills) {
+    $source = Join-Path $SkillSource $name
+    if (-not (Test-Path (Join-Path $source "SKILL.md"))) {
+      throw "Distribution manifest skill is missing from source: $name"
+    }
+    CopyDirectory $source (Join-Path $UserSkillRoot $name)
   }
 }
 
