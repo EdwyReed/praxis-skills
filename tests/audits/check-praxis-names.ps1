@@ -1,14 +1,14 @@
 $ErrorActionPreference = "Stop"
-$Root = Resolve-Path (Join-Path $PSScriptRoot "../..")
+$Root = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 $files = Get-ChildItem $Root -Recurse -File | Where-Object {
-  $_.FullName -notmatch '\\tmp\\codex-workflows-source\\' -and
-  $_.FullName -notmatch '\\tmp\\' -and
-  $_.FullName -notmatch '\\__pycache__\\' -and
-  $_.FullName -notmatch '\\.git\\' -and
-  $_.FullName -notmatch '\\install.ps1$' -and
-  $_.FullName -notmatch '\\uninstall.ps1$' -and
-  $_.FullName -notmatch '\\distribution\\manifest.json$' -and
-  $_.FullName -notmatch '\\tests\\audits\\check-praxis-names.ps1$'
+  $relative = [IO.Path]::GetRelativePath($Root, $_.FullName).Replace('\', '/')
+  $relative -notmatch '^tmp/' -and
+  $relative -notmatch '(^|/)__pycache__/' -and
+  $relative -notmatch '^\.git/' -and
+  $relative -notmatch '(^|/)install\.ps1$' -and
+  $relative -notmatch '(^|/)uninstall\.ps1$' -and
+  $relative -ne 'distribution/manifest.json' -and
+  $relative -ne 'tests/audits/check-praxis-names.ps1'
 }
 
 $violations = @()

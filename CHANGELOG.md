@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.0-beta.3 - 2026-07-29
+## v0.4.0-beta.4 - 2026-07-29
 
 - Added Praxis Clear Speech for replies, technical content, code text, and interface copy.
 - Added `default`, `strict`, and `off` communication modes to new and refreshed project profiles.
