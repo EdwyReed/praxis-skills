@@ -10,7 +10,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 test("package metadata has no dependencies or lifecycle scripts", async () => {
   const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
   assert.equal(packageJson.name, "praxis-skills");
-  assert.equal(packageJson.version, "0.4.0-beta.2");
+  assert.equal(packageJson.version, "0.4.0-beta.3");
   assert.equal(packageJson.dependencies, undefined);
   for (const name of ["preinstall", "install", "postinstall", "prepublish", "prepublishOnly", "prepare"]) {
     assert.equal(packageJson.scripts[name], undefined, `unexpected lifecycle script: ${name}`);
@@ -30,7 +30,11 @@ test("npm dry-run tarball contains only the intended distribution surface", () =
     shell: process.platform === "win32",
   });
   assert.equal(packed.status, 0, packed.stderr);
-  const metadata = JSON.parse(packed.stdout)[0];
+  const parsed = JSON.parse(packed.stdout);
+  const metadata = Array.isArray(parsed)
+    ? parsed[0]
+    : parsed["praxis-skills"] ?? Object.values(parsed)[0];
+  assert.ok(metadata, "npm pack returned no package metadata");
   const files = metadata.files.map((entry) => entry.path.replaceAll("\\", "/"));
 
   for (const required of [
