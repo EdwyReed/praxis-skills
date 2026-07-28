@@ -1,7 +1,7 @@
 {
   "name": "praxis-skills",
-  "version": "0.4.0-beta.1",
-  "description": "Codex-native workflow package with mandatory project direction, reproducible external skill dependencies, feature development, research, design, implementation, QA, documentation, Sentry triage, and PR preparation.",
+  "version": "0.4.0-beta.2",
+  "description": "Codex-native workflow package with project direction, clear technical writing, reproducible skill dependencies, feature delivery, QA, documentation, and PR preparation.",
   "author": {
     "name": "EdwyReed"
   },
@@ -11,12 +11,13 @@
   "interface": {
     "displayName": "Praxis Skills",
     "shortDescription": "Reusable Codex workflows for engineering delivery.",
-    "longDescription": "Codex-native workflow package preserving the original feature, research, design, implementation, documentation, QA, Sentry triage, and PR workflows as skills.",
+    "longDescription": "Codex-native workflow package for project context, clear technical writing, research, design, implementation, documentation, QA, Sentry triage, and PR workflows.",
     "developerName": "EdwyReed",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
     "defaultPrompt": [
       "Use praxis-init to initialize or audit this project's direction and external skill dependencies.",
+      "Use praxis-clear-speech to write or audit clear technical content.",
       "Use praxis-feature-flow for this feature.",
       "Run praxis-research on this codebase.",
       "Prepare docs with praxis-docs-suite."

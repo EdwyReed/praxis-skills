@@ -28,10 +28,14 @@ foreach ($surface in $surfaces) {
 
 $sourceRoot = Join-Path $root ".agents/skills/$skillName"
 $pluginRoot = Join-Path $root "plugin/skills/$skillName"
-$sourceFiles = Get-ChildItem -LiteralPath $sourceRoot -File -Recurse | ForEach-Object {
+$sourceFiles = Get-ChildItem -LiteralPath $sourceRoot -File -Recurse | Where-Object {
+  $_.FullName -notmatch '\\__pycache__\\'
+} | ForEach-Object {
   $_.FullName.Substring($sourceRoot.Length).TrimStart('\', '/')
 } | Sort-Object
-$pluginFiles = Get-ChildItem -LiteralPath $pluginRoot -File -Recurse | ForEach-Object {
+$pluginFiles = Get-ChildItem -LiteralPath $pluginRoot -File -Recurse | Where-Object {
+  $_.FullName -notmatch '\\__pycache__\\'
+} | ForEach-Object {
   $_.FullName.Substring($pluginRoot.Length).TrimStart('\', '/')
 } | Sort-Object
 
@@ -65,10 +69,12 @@ $template = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot "assets/project
 foreach ($requiredText in @(
   "schema: praxis-project/v1",
   "status: needs-confirmation",
+  "clear_speech: default",
   "# Core Contract",
   "## Project Concept",
   "## Product Direction",
   "## Experience Direction",
+  "## Communication Profile",
   "## Design Skill Routing",
   "## Reference Designs and Projects",
   "## Constraints and Non-Negotiables",
@@ -81,7 +87,7 @@ foreach ($requiredText in @(
 }
 
 $bootstrap = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot "assets/agents-bootstrap.md")
-foreach ($marker in @("<!-- praxis:project-context:start -->", "<!-- praxis:project-context:end -->", ".praxis/project.md", ".praxis/skills.yaml", "Never install")) {
+foreach ($marker in @("<!-- praxis:project-context:start -->", "<!-- praxis:project-context:end -->", ".praxis/project.md", ".praxis/skills.yaml", "clear_speech", "default", "strict", "off", "Never install")) {
   if ($bootstrap -notmatch [regex]::Escape($marker)) {
     throw "AGENTS bootstrap missing marker: $marker"
   }
@@ -162,12 +168,42 @@ $validResult = $validOutput | ConvertFrom-Json
 if (-not $validResult.valid -or -not $validResult.profile_sha256) {
   throw "Valid profile result lacks valid=true or profile_sha256"
 }
+if ($validResult.clear_speech_mode -ne "default") {
+  throw "Legacy profile without clear_speech must resolve to default"
+}
 
 $fixtureRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("praxis-project-audit-" + [guid]::NewGuid().ToString("N"))
 try {
   New-Item -ItemType Directory -Force -Path (Join-Path $fixtureRoot ".praxis") | Out-Null
   Copy-Item -LiteralPath (Join-Path $root ".praxis/project.md") -Destination (Join-Path $fixtureRoot ".praxis/project.md")
   Copy-Item -LiteralPath (Join-Path $root "AGENTS.md") -Destination (Join-Path $fixtureRoot "AGENTS.md")
+
+  $profilePath = Join-Path $fixtureRoot ".praxis/project.md"
+  $baseProfile = Get-Content -Raw -LiteralPath $profilePath
+  $offProfile = $baseProfile `
+    -replace "(?m)^(visual_scope:\s*\S+\s*)$", "`$1`nclear_speech: off" `
+    -replace "(?m)^## Design Skill Routing", "## Communication Profile`n`n| Field | Value |`n|---|---|`n| Praxis Clear Speech | off |`n`n## Design Skill Routing"
+  Set-Content -LiteralPath $profilePath -Value $offProfile -Encoding UTF8
+  $offOutput = & python $validator $fixtureRoot
+  if ($LASTEXITCODE -ne 0) {
+    throw "Validator rejected clear_speech off: $offOutput"
+  }
+  $offResult = $offOutput | ConvertFrom-Json
+  if ($offResult.clear_speech_mode -ne "off") {
+    throw "Validator did not return clear_speech_mode=off: $offOutput"
+  }
+
+  $invalidModeProfile = $offProfile -replace "clear_speech: off", "clear_speech: sometimes"
+  Set-Content -LiteralPath $profilePath -Value $invalidModeProfile -Encoding UTF8
+  $invalidModeOutput = & python $validator $fixtureRoot
+  if ($LASTEXITCODE -eq 0) {
+    throw "Validator accepted an invalid clear_speech mode: $invalidModeOutput"
+  }
+  if ((($invalidModeOutput | ConvertFrom-Json).errors -join "`n") -notmatch "invalid frontmatter field: clear_speech") {
+    throw "Invalid clear_speech mode did not report the expected error: $invalidModeOutput"
+  }
+  Set-Content -LiteralPath $profilePath -Value $offProfile -Encoding UTF8
+
   $validManifest = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot "assets/skills-template.yaml")
   Set-Content -LiteralPath (Join-Path $fixtureRoot ".praxis/skills.yaml") -Value $validManifest -Encoding UTF8
   $manifestOutput = & python $validator $fixtureRoot

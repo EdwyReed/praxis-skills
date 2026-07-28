@@ -1,0 +1,4 @@
+interface:
+  display_name: "Praxis Clear Speech"
+  short_description: "Clear technical writing and audit rules"
+  default_prompt: "Use $praxis-clear-speech to write or audit this content for clear technical communication."

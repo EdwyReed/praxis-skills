@@ -30,6 +30,8 @@ REQUIRED_HEADINGS = [
     "## Open Questions",
     "## Confirmation",
 ]
+COMMUNICATION_HEADING = "## Communication Profile"
+CLEAR_SPEECH_VALUES = {"default", "strict", "off"}
 
 START_MARKER = "<!-- praxis:project-context:start -->"
 END_MARKER = "<!-- praxis:project-context:end -->"
@@ -47,6 +49,11 @@ def scalar(value: str | None) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
         return value[1:-1]
     return value
+
+
+def frontmatter_field(frontmatter: str, key: str) -> str:
+    match = re.search(rf"(?m)^{re.escape(key)}:\s*(.*?)\s*$", frontmatter)
+    return scalar(match.group(1) if match else None)
 
 
 def manifest_field(block: str, key: str, indent: int = 4) -> str:
@@ -169,7 +176,7 @@ def main() -> int:
 
     if not profile_path.is_file():
         errors.append(f"missing profile: {profile_path}")
-        return finish(errors, None, None, 0, 0, 0)
+        return finish(errors, None, None, 0, 0, 0, "default")
 
     text = profile_path.read_text(encoding="utf-8")
     frontmatter_match = re.match(r"\A---\s*\n(.*?)\n---\s*\n", text, flags=re.DOTALL)
@@ -182,6 +189,16 @@ def main() -> int:
     for key, pattern in REQUIRED_FRONTMATTER.items():
         if not re.search(rf"(?m)^{re.escape(key)}:\s*{pattern}\s*$", frontmatter):
             errors.append(f"invalid or missing frontmatter field: {key}")
+
+    clear_speech_raw = frontmatter_field(frontmatter, "clear_speech")
+    clear_speech_mode = clear_speech_raw or "default"
+    if clear_speech_mode not in CLEAR_SPEECH_VALUES:
+        errors.append(
+            "invalid frontmatter field: clear_speech "
+            f"(expected default, strict, or off; got {clear_speech_mode})"
+        )
+    if clear_speech_raw and COMMUNICATION_HEADING not in text:
+        errors.append(f"missing heading: {COMMUNICATION_HEADING}")
 
     positions: list[int] = []
     for heading in REQUIRED_HEADINGS:
@@ -220,7 +237,15 @@ def main() -> int:
 
     manifest_digest, package_count = validate_manifest(manifest_path, errors)
     digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
-    return finish(errors, digest, manifest_digest, package_count, word_count, core_word_count)
+    return finish(
+        errors,
+        digest,
+        manifest_digest,
+        package_count,
+        word_count,
+        core_word_count,
+        clear_speech_mode,
+    )
 
 
 def finish(
@@ -230,6 +255,7 @@ def finish(
     package_count: int,
     word_count: int,
     core_word_count: int,
+    clear_speech_mode: str,
 ) -> int:
     result = {
         "valid": not errors,
@@ -239,6 +265,7 @@ def finish(
         "skills_package_count": package_count,
         "word_count": word_count,
         "core_word_count": core_word_count,
+        "clear_speech_mode": clear_speech_mode,
         "errors": errors,
     }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))

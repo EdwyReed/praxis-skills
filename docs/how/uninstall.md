@@ -3,14 +3,14 @@
 For an npm installation, preview the exact owned directories first:
 
 ```bash
-npx praxis-skills uninstall --user --dry-run
+npx praxis-skills@beta uninstall --user --dry-run
 ```
 
 Then remove them explicitly:
 
 ```bash
-npx praxis-skills uninstall --user --yes
-npx praxis-skills uninstall --repo . --yes
+npx praxis-skills@beta uninstall --user --yes
+npx praxis-skills@beta uninstall --repo . --yes
 ```
 
 For checkout-based installs or a local Codex plugin marketplace entry:
