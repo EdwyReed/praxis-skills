@@ -1,12 +1,13 @@
 {
   "schema": "praxis-distribution/v1",
   "packageName": "praxis-skills",
-  "version": "0.4.0-beta.1",
+  "version": "0.4.0-beta.2",
   "payload": "plugin/skills",
   "sourceSkills": ".agents/skills",
   "receiptName": "praxis-skills.json",
   "skills": [
     "praxis-adr-template", "praxis-ai-debug", "praxis-api-contracts-template",
+    "praxis-clear-speech",
     "praxis-design", "praxis-design-template", "praxis-docs-suite",
     "praxis-feature-flow", "praxis-implement", "praxis-init",
     "praxis-owasp-top-10", "praxis-plan", "praxis-pr",

@@ -83,6 +83,14 @@ The mandatory project profile captures durable direction:
 - technical, accessibility, legal, operational, and language constraints;
 - unresolved questions and explicit confirmation state.
 
+It also selects a Praxis Clear Speech mode:
+
+- `default` applies clear-language rules and the English technical profile where applicable;
+- `strict` applies the English technical profile to all eligible English prose;
+- `off` disables automatic use and audits.
+
+An explicit request for marketing, creative, literary, legal, academic, brand, or another style takes precedence for that text. A user can still invoke `praxis-clear-speech` for one task when the project mode is `off`. Existing profiles without this field use `default`.
+
 New projects use a focused interview. Existing repositories are audited before the agent asks questions. An inferred profile remains `needs-confirmation`; repository mutations wait until the user confirms it.
 
 To protect the context window, the leading Core Contract is limited to 400 words and the complete profile to 2,500 words. The validator emits a SHA-256 digest, and workflows record the exact profile revision they used.
@@ -126,6 +134,23 @@ Praxis never fills this file from a contributor's complete installed-skill inven
 | `praxis-system-profile` | Describe actors, use cases, integrations, data flows, issues, and open questions |
 | `praxis-skill-from-git` | Extract real repository conventions from Git history into a project-specific skill |
 | `praxis-ai-debug` | Inspect package, skill, reference, MCP, installation, and workflow health |
+| `praxis-clear-speech` | Write or audit clear replies, technical text, code messages, and interface copy |
+
+## Praxis Clear Speech
+
+Praxis Clear Speech is an independent Praxis policy based on clear technical writing principles from ASD-STE100 Issue 9. Praxis does not bundle the official standard or its controlled dictionary. The policy does not imply ASD approval or certification.
+
+Core rules apply to eligible text in any language. A stricter English Technical Profile adds sentence limits, terminology controls, simple grammar, and structural rules. Protected content includes identifiers, API fields, exact quotations, legal text, trademarks, external contracts, and approved project terms.
+
+Run a structural audit:
+
+```bash
+python .agents/skills/praxis-clear-speech/scripts/audit_text.py <path>
+```
+
+Use `--sentence-limit 20` for procedures. The default is 25 words for descriptions. Add an authorized approved-word list and project glossary for lexical review. Automated checks do not prove full ASD-STE100 compliance.
+
+See the [initial Praxis skill-text baseline](docs/porting/clear-speech-baseline.md) for current structural findings and review limits.
 
 ### Embedded references and templates
 
@@ -155,24 +180,26 @@ Sentry, Context7, and OpenAI documentation MCP servers are optional. The workflo
 
 ### Recommended: npm installer
 
+The current release channel is `beta`. Use the explicit tag so `npx` selects the newest prerelease.
+
 Install Praxis for all repositories available to your user account:
 
 ```bash
-npx praxis-skills install --user
+npx praxis-skills@beta install --user
 ```
 
 Install into one repository:
 
 ```bash
-npx praxis-skills install --repo .
+npx praxis-skills@beta install --repo .
 ```
 
 The CLI supports `install`, `doctor`, `uninstall`, `list`, and `version`. It builds an exact plan from `distribution/manifest.json`, owns only the listed Praxis directories, and preserves unrelated skills. Existing targets are skipped unless `--force` is used. Destructive operations require confirmation or an explicit `--yes`; use `--dry-run` to preview them.
 
 ```bash
-npx praxis-skills doctor --user
-npx praxis-skills install --user --force --yes
-npx praxis-skills uninstall --user --dry-run
+npx praxis-skills@beta doctor --user
+npx praxis-skills@beta install --user --force --yes
+npx praxis-skills@beta uninstall --user --dry-run
 ```
 
 Start a new Codex task or restart the application after installing or updating skills so the catalog is refreshed.
@@ -189,7 +216,7 @@ pwsh ./install.ps1 --repo
 pwsh ./verify-install.ps1
 ```
 
-On macOS or Linux, use `./install.sh --user --force`. In a source checkout, repo mode validates the canonical `.agents/skills` tree; unlike `npx praxis-skills install --repo`, it does not copy skills into another repository.
+On macOS or Linux, use `./install.sh --user --force`. In a source checkout, repo mode validates the canonical `.agents/skills` tree; unlike `npx praxis-skills@beta install --repo`, it does not copy skills into another repository.
 
 ### Local plugin packaging
 
@@ -286,19 +313,19 @@ pwsh ./verify-install.ps1
 Update a user installation:
 
 ```bash
-npx praxis-skills install --user --force --yes
+npx praxis-skills@beta install --user --force --yes
 ```
 
 Preview removal:
 
 ```bash
-npx praxis-skills uninstall --user --dry-run
+npx praxis-skills@beta uninstall --user --dry-run
 ```
 
 Remove npm-installed user-global Praxis skills:
 
 ```bash
-npx praxis-skills uninstall --user --yes
+npx praxis-skills@beta uninstall --user --yes
 ```
 
 The checkout-based `uninstall.ps1` remains available for local plugin marketplace entries. Both paths target only current Praxis directories, known legacy package names, and their own generated metadata.

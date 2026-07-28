@@ -19,7 +19,9 @@ $allowed = @(
 )
 
 $violations = @()
-foreach ($file in Get-ChildItem $Root -Recurse -File | Where-Object { $_.FullName -notmatch '\\.git\\' }) {
+foreach ($file in Get-ChildItem $Root -Recurse -File | Where-Object {
+  $_.FullName -notmatch '\\.git\\' -and $_.FullName -notmatch '\\__pycache__\\'
+}) {
   $isAllowed = $false
   foreach ($a in $allowed) { if ($file.FullName -match $a) { $isAllowed = $true; break } }
   if ($isAllowed) { continue }

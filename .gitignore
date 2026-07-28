@@ -3,6 +3,8 @@
 __pycache__/
 *.py[cod]
 /tmp/codex-workflows-source/
+/tmp/clear-speech/
+/tmp/pdfs/
 node_modules/
 *.tgz
 npm-debug.log*

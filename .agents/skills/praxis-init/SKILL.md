@@ -15,12 +15,12 @@ Create one compact, confirmed source of project direction before project-scoped 
    - **New project:** load `references/new-project-interview.md`.
    - **Existing project:** load `references/existing-project-audit.md` and audit before asking questions.
    - **Refresh:** preserve confirmed decisions, identify material drift, and return changes to `needs-confirmation`.
-4. Load `references/project-schema.md` and use `assets/project-template.md` as the profile contract.
-5. Write `.praxis/project.md` with `status: needs-confirmation`. Never invent reference URLs, product facts, or design decisions.
+4. Load `references/project-schema.md`, `references/clear-speech.md`, and `assets/project-template.md` as the profile contract.
+5. Write `.praxis/project.md` with `status: needs-confirmation`. Set `clear_speech` to `default`, `strict`, or `off`. Never infer `strict`. The user can select `off`. Never invent reference URLs, product facts, or design decisions.
 6. Determine whether the project has external nonstandard skill dependencies. Load `references/skill-manifest-schema.md` only when candidates exist. Create `.praxis/skills.yaml` from `assets/skills-template.yaml` only when at least one package passes the inclusion policy; otherwise leave it absent.
 7. Ensure the root `AGENTS.md` contains exactly one managed AGENTS.md bootstrap from `assets/agents-bootstrap.md`. Preserve all unrelated instructions. Create `AGENTS.md` if absent.
 8. Run the validator. Keep the complete profile at 2500 words or fewer and the leading Core Contract at 400 words or fewer.
-9. Present the inferred Core Contract, design-skill routing, external skill dependencies, references, constraints, and open questions. Ask the user to confirm or correct them.
+9. Present the inferred Core Contract, communication mode, design-skill routing, external skill dependencies, references, constraints, and open questions. Ask the user to confirm or correct them.
 10. Only after explicit confirmation, set `status: confirmed`, update the Confirmation section, rerun validation, and report `profile_sha256` plus `skills_manifest_sha256` when present.
 
 ## Project Context Gate

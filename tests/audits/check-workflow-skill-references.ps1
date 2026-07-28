@@ -4,6 +4,7 @@ $workflowSkills = Get-ChildItem (Join-Path $Root ".agents/skills") -Directory | 
   $_.Name -like "praxis-*" -and $_.Name -notin @(
     "praxis-adr-template",
     "praxis-api-contracts-template",
+    "praxis-clear-speech",
     "praxis-design-template",
     "praxis-init",
     "praxis-owasp-top-10",

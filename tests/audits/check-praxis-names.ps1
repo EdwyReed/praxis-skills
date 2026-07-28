@@ -2,6 +2,8 @@ $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "../..")
 $files = Get-ChildItem $Root -Recurse -File | Where-Object {
   $_.FullName -notmatch '\\tmp\\codex-workflows-source\\' -and
+  $_.FullName -notmatch '\\tmp\\' -and
+  $_.FullName -notmatch '\\__pycache__\\' -and
   $_.FullName -notmatch '\\.git\\' -and
   $_.FullName -notmatch '\\install.ps1$' -and
   $_.FullName -notmatch '\\uninstall.ps1$' -and

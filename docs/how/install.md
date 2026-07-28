@@ -5,15 +5,15 @@
 Node.js 22 or newer is required. Install for the current user:
 
 ```bash
-npx praxis-skills install --user
-npx praxis-skills doctor --user
+npx praxis-skills@beta install --user
+npx praxis-skills@beta doctor --user
 ```
 
 Install into a repository's `.agents/skills` directory:
 
 ```bash
-npx praxis-skills install --repo .
-npx praxis-skills doctor --repo .
+npx praxis-skills@beta install --repo .
+npx praxis-skills@beta doctor --repo .
 ```
 
 Use `--target <skills-dir>` for a compatible agent with a different discovery location. Existing skill directories are skipped. Replacing them requires `--force` and confirmation, or `--force --yes` in automation. `--dry-run` never mutates or prompts, and `--json` provides machine-readable output.

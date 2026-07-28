@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.4.0-beta.2 - 2026-07-29
+
+- Added Praxis Clear Speech for replies, technical content, code text, and interface copy.
+- Added `default`, `strict`, and `off` communication modes to new and refreshed project profiles.
+- Added a structural text audit, protected-content rules, distribution parity checks, and a package baseline report.
+
+## v0.4.0-beta.1 - 2026-07-10
 
 - Added the zero-runtime-dependency `praxis-skills` npm CLI with user, repository, and custom-target install, doctor, dry-run, force, JSON, and safe uninstall flows.
 - Added an authoritative distribution manifest, install receipts, npm packaging allowlist, cross-platform tests, and Trusted Publishing release preparation.

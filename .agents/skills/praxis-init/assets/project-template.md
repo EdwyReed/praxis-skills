@@ -5,6 +5,7 @@ project_id: project-name
 project_type: new
 source: interview
 visual_scope: none
+clear_speech: default
 updated: YYYY-MM-DD
 ---
 
@@ -18,7 +19,9 @@ updated: YYYY-MM-DD
 
 **Non-negotiables:** The few constraints that must survive implementation tradeoffs.
 
-**Design route:** One primary visual skill or `none`; name technical supplements separately.
+**Design route:** One primary visual skill or `none`. Name technical supplements separately.
+
+**Communication:** Praxis Clear Speech mode (`default`, `strict`, or `off`) with any explicit style exceptions.
 
 ## Project Concept
 
@@ -39,6 +42,16 @@ Concise project definition, audience, and purpose.
 | Dimension | Desired | Avoid |
 |-----------|---------|-------|
 | Tone | Concrete quality | Opposing failure mode |
+
+## Communication Profile
+
+| Field | Selection | Notes |
+|-------|-----------|-------|
+| Praxis Clear Speech | default / strict / off | `off` disables automatic use and audits |
+| English technical profile | automatic / all eligible prose / disabled | Derived from the selected mode |
+| Code and UI surfaces | comments, messages, help, and interface copy / disabled | Protected identifiers and exact external text are unchanged |
+| Explicit style overrides | marketing, creative, literary, legal, academic, or brand-specific | Current user instructions take precedence |
+| Project glossary | Path or `None confirmed` | Approved project terms for lexical review |
 
 ## Design Skill Routing
 
