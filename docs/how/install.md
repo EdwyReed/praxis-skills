@@ -9,14 +9,52 @@ npx praxis-skills@beta install --user
 npx praxis-skills@beta doctor --user
 ```
 
-Install into a repository's `.agents/skills` directory:
+On an interactive TTY, `install --user` (without `--agents` / `--yes` / `--json`) detects known coding-agent homes and asks which agents should receive the package. Non-interactive runs without `--agents` install **Codex only** for backward compatibility.
+
+Detect agents without installing:
 
 ```bash
-npx praxis-skills@beta install --repo .
-npx praxis-skills@beta doctor --repo .
+npx praxis-skills@beta detect
+npx praxis-skills@beta detect --json
 ```
 
-Use `--target <skills-dir>` for a compatible agent with a different discovery location. Existing skill directories are skipped. Replacing them requires `--force` and confirmation, or `--force --yes` in automation. `--dry-run` never mutates or prompts, and `--json` provides machine-readable output.
+Install for specific agents (user-global):
+
+```bash
+# Codex skill discovery (~/.agents/skills)
+npx praxis-skills@beta install --user --agents codex
+
+# Claude Code skills + thin slash-command adapters
+npx praxis-skills@beta install --user --agents claude-code
+
+# Several at once
+npx praxis-skills@beta install --user --agents codex,claude-code,cursor,grok
+npx praxis-skills@beta install --user --all-agents
+```
+
+Supported agents:
+
+| Agent id | Skills path (user) | Extra surfaces |
+|---|---|---|
+| `codex` | `~/.agents/skills` | Codex / AGENTS skill discovery |
+| `claude-code` | `~/.claude/skills` | Slash commands in `~/.claude/commands` (`/feature`, `/refine`, …) that load the matching Praxis skill |
+| `cursor` | `~/.cursor/skills` | Cursor Agent Skills |
+| `grok` | `~/.grok/skills` | Grok Build skills |
+
+Slash commands are **adapters**, not a second workflow implementation. Each command points at the corresponding `praxis-*` skill package. Codex skill invocation remains the primary portable contract. Disable adapters with `--no-slash-commands`, or force them (when a commands root exists) with `--with-slash-commands`.
+
+Install into a repository (agent-specific project paths):
+
+```bash
+npx praxis-skills@beta install --repo . --agents codex,claude-code
+npx praxis-skills@beta doctor --repo . --agents codex,claude-code
+```
+
+- Codex / Grok repo skills → `.agents/skills`
+- Claude Code repo skills → `.claude/skills` (+ `.claude/commands` adapters)
+- Cursor repo skills → `.cursor/skills`
+
+Use `--target <skills-dir>` for a one-off skills directory. Optionally pass `--commands-target <dir>` with `--with-slash-commands` to emit Claude-style command adapters next to a custom target. Existing skill directories are skipped. Replacing them requires `--force` and confirmation, or `--force --yes` in automation. `--dry-run` never mutates or prompts, and `--json` provides machine-readable output.
 
 The npm CLI copies only directories listed by `distribution/manifest.json`. It has no install lifecycle script and performs no implicit project initialization.
 

@@ -188,21 +188,34 @@ Install Praxis for all repositories available to your user account:
 npx praxis-skills@beta install --user
 ```
 
+On an interactive terminal, the installer detects known agent homes (Codex, Claude Code, Cursor, Grok) and asks which ones to target. Non-interactive runs without `--agents` install **Codex only**.
+
 Install into one repository:
 
 ```bash
 npx praxis-skills@beta install --repo .
 ```
 
-The CLI supports `install`, `doctor`, `uninstall`, `list`, and `version`. It builds an exact plan from `distribution/manifest.json`, owns only the listed Praxis directories, and preserves unrelated skills. Existing targets are skipped unless `--force` is used. Destructive operations require confirmation or an explicit `--yes`; use `--dry-run` to preview them.
+Multi-agent examples:
 
 ```bash
-npx praxis-skills@beta doctor --user
-npx praxis-skills@beta install --user --force --yes
-npx praxis-skills@beta uninstall --user --dry-run
+npx praxis-skills@beta detect
+npx praxis-skills@beta install --user --agents codex,claude-code
+npx praxis-skills@beta install --user --agents claude-code   # skills + /feature-style slash adapters
+npx praxis-skills@beta install --repo . --agents cursor,grok
 ```
 
-Start a new Codex task or restart the application after installing or updating skills so the catalog is refreshed.
+Claude Code receives both skill packages under `~/.claude/skills` (or `.claude/skills`) and thin slash-command adapters under `commands/` (`/feature`, `/refine`, `/research`, …). Each adapter loads the matching `praxis-*` skill; workflow logic is not duplicated. Codex skill invocation is unchanged.
+
+The CLI supports `install`, `doctor`, `uninstall`, `detect`, `list`, and `version`. It builds an exact plan from `distribution/manifest.json`, owns only the listed Praxis directories, and preserves unrelated skills. Existing targets are skipped unless `--force` is used. Destructive operations require confirmation or an explicit `--yes`; use `--dry-run` to preview them.
+
+```bash
+npx praxis-skills@beta doctor --user --agents codex,claude-code
+npx praxis-skills@beta install --user --force --yes
+npx praxis-skills@beta uninstall --user --agents claude-code --dry-run
+```
+
+Start a new agent session or restart the application after installing or updating skills so the catalog is refreshed.
 
 ### Checkout-based fallback
 

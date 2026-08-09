@@ -1,11 +1,29 @@
 # Migrate From Claude Code
 
-The source repository was designed for Claude Code slash commands and installed symlinks into `~/.claude`. Those scripts are historical compatibility references only.
+The source repository was designed for Claude Code slash commands and installed symlinks into `~/.claude`. The historical checkout installer is obsolete.
 
-Use these Codex equivalents:
+Current multi-agent install:
 
-| Claude command | Codex skill |
+```bash
+npx praxis-skills@beta install --user --agents claude-code
+# or interactively:
+npx praxis-skills@beta install --user
+```
+
+This installs:
+
+- full skill packages into `~/.claude/skills/praxis-*` (and project `.claude/skills` with `--repo`);
+- thin slash-command adapters into `~/.claude/commands/` that load those skills.
+
+Codex remains available in parallel:
+
+```bash
+npx praxis-skills@beta install --user --agents codex,claude-code
+```
+
+| Slash command | Praxis skill (source of truth) |
 | --- | --- |
+| `/init` | `praxis-init` |
 | `/feature` | `praxis-feature-flow` |
 | `/refine` | `praxis-refine` |
 | `/research` | `praxis-research` |
@@ -19,5 +37,8 @@ Use these Codex equivalents:
 | `/system-profile` | `praxis-system-profile` |
 | `/skill-from-git` | `praxis-skill-from-git` |
 | `/ai-debug` | `praxis-ai-debug` |
+| `/clear-speech` | `praxis-clear-speech` |
 
-Claude Agent Teams map to optional Codex subagents. If subagents are not available, the skill applies the same role references inline.
+Slash commands do not re-implement workflows. They route into the skill package. Codex skill invocation (`$praxis-feature-flow` / skill discovery) stays first-class.
+
+Claude Agent Teams map to optional subagents. If subagents are not available, the skill applies the same role references inline.

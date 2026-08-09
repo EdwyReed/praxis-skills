@@ -2,8 +2,10 @@
 
 ## Working agreements
 
-- Treat this repository as a Codex-native workflow package. Do not add new Claude Code slash-command surfaces for reusable workflows.
-- Use `.agents/skills/*/SKILL.md` for reusable Codex workflows. Keep detailed role, rule, context, and scenario material in `references/` and load it only when the selected skill needs it.
+- Treat this repository as a Codex-first workflow package. Codex skill packages under `.agents/skills/*/SKILL.md` remain the source of truth.
+- Claude Code slash commands are allowed only as thin install-time adapters that load the matching Praxis skill. Do not fork workflow logic into command files.
+- Multi-agent install targets (Codex, Claude Code, Cursor, Grok) are declared in `distribution/manifest.json` and implemented by the npm CLI. Keep agent path detection filesystem-based and dry-run friendly.
+- Use `.agents/skills/*/SKILL.md` for reusable workflows. Keep detailed role, rule, context, and scenario material in `references/` and load it only when the selected skill needs it.
 - Preserve the workflow artifact chain under `.workflows/{feature-id}/`. Feature work should produce inspectable research, design, plan, implementation, documentation, and PR artifacts.
 - Prefer repo-local validation before user-global installation. Installers must be dry-run friendly and must not delete unrelated skills or plugins.
 - Treat subagents as optional. Any workflow that can use subagents must also describe an inline fallback path.
@@ -17,7 +19,7 @@
 - Do not rewrite unrelated user changes. Keep generated migration edits scoped to Codex workflow packaging.
 - Do not mention AI vendors or assistants in commit messages.
 - Verify source coverage whenever adding, removing, or moving ported workflow files.
-- No active user-facing install path may require the legacy Claude home directory.
+- Install paths may target Claude, Cursor, or Grok homes when the user selects those agents. Do not hard-require a Claude home for Codex-only installs.
 
 ## Language
 

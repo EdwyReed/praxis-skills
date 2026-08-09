@@ -5,4 +5,5 @@
 - `AGENTS.md` contains only durable repo behavior. Technology rules, review checklists, contexts, and scenarios remain references.
 - MCP servers are optional dependencies. Skills must document fallback or blocked behavior when Sentry, GitHub, Context7, OpenAI Docs, browser, or Stoplight tooling is unavailable.
 - Plugin packaging happens after repo-local skills exist. The plugin is a distribution artifact, not the only source of truth.
-- The historical Claude installer is not a Codex installer. Codex install scripts target `.agents/skills`, user skill directories, or local plugin marketplace entries.
+- The npm installer is multi-agent: Codex (`.agents/skills`), Claude Code (`.claude/skills` + thin `commands/` adapters), Cursor (`.cursor/skills`), and Grok (`.grok/skills`). Skill packages remain the source of truth; slash commands only route into skills.
+- Checkout `install.ps1` / `install.sh` remain Codex-oriented fallbacks. Prefer the npm CLI for multi-agent installs.

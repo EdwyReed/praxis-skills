@@ -10,6 +10,15 @@ if ($package.name -ne $distribution.packageName) { throw "Package name differs f
 if ($package.version -ne $distribution.version) { throw "Package version differs from distribution manifest" }
 if ($plugin.version -ne $distribution.version) { throw "Plugin version differs from distribution manifest" }
 if ($package.dependencies) { throw "Runtime dependencies are not allowed" }
+if (-not $distribution.agents -or $distribution.agents.Count -lt 1) { throw "Distribution manifest missing agents" }
+if (-not ($distribution.agents | Where-Object { $_.id -eq "codex" })) { throw "Distribution agents must include codex" }
+if (-not ($distribution.agents | Where-Object { $_.id -eq "claude-code" })) { throw "Distribution agents must include claude-code" }
+if (-not $distribution.slashCommands) { throw "Distribution manifest missing slashCommands" }
+foreach ($command in $distribution.slashCommands) {
+  if ($distribution.skills -notcontains $command.skill) {
+    throw "Slash command $($command.name) references unknown skill $($command.skill)"
+  }
+}
 
 $lifecycleNames = @("preinstall", "install", "postinstall", "prepublish", "prepublishOnly", "prepare")
 foreach ($name in $lifecycleNames) {

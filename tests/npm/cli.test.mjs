@@ -172,7 +172,82 @@ test("distribution validation rejects path traversal skill names", () => {
         receiptName: "praxis-skills.json",
         skills: ["../outside"],
         legacySkills: [],
+        agents: [
+          {
+            id: "codex",
+            label: "Codex",
+            description: "test",
+            detectHomes: [".agents"],
+            userSkillsRel: [".agents", "skills"],
+            repoSkillsRel: [".agents", "skills"],
+            userReceiptRel: [".agents"],
+            repoReceiptRel: [".agents"],
+            slashCommands: false,
+            defaultSelected: true,
+          },
+        ],
+        slashCommands: [],
       }),
     /Unsafe skill name/,
+  );
+});
+
+test("detect --json reports known agents", () => {
+  const result = jsonOutput(runCli(["detect", "--json"]));
+  assert.equal(result.command, "detect");
+  const ids = result.agents.map((agent) => agent.id);
+  assert.deepEqual(ids, ["codex", "claude-code", "cursor", "grok"]);
+});
+
+test("claude-code user install writes skills and slash-command adapters", async (t) => {
+  const home = await temporaryDirectory(t);
+  const env = { HOME: home, USERPROFILE: home };
+  const installed = jsonOutput(
+    runCli(["install", "--user", "--agents", "claude-code", "--json"], { env }),
+  );
+  assert.equal(installed.targets.length, 1);
+  assert.equal(installed.targets[0].agent, "claude-code");
+  assert.equal(installed.summary.copied, expectedSkills.length);
+  assert.equal(installed.summary.commandsWritten, 15);
+
+  const skill = path.join(home, ".claude", "skills", "praxis-feature-flow", "SKILL.md");
+  const command = path.join(home, ".claude", "commands", "feature.md");
+  assert.equal(await readFile(skill, "utf8").then(Boolean), true);
+  const commandBody = await readFile(command, "utf8");
+  assert.match(commandBody, /praxis-feature-flow/);
+  assert.match(commandBody, /\$ARGUMENTS/);
+
+  const receipt = JSON.parse(await readFile(path.join(home, ".claude", "praxis-skills.json"), "utf8"));
+  assert.equal(receipt.agent, "claude-code");
+  assert.equal(receipt.slashCommands.includes("feature"), true);
+
+  const doctor = jsonOutput(runCli(["doctor", "--user", "--agents", "claude-code", "--json"], { env }));
+  assert.equal(doctor.healthy, true);
+
+  const removed = jsonOutput(
+    runCli(["uninstall", "--user", "--agents", "claude-code", "--yes", "--json"], { env }),
+  );
+  assert.equal(removed.summary.removed, expectedSkills.length);
+  assert.equal(removed.summary.commandsRemoved, 15);
+});
+
+test("multi-agent install can target codex and claude-code together", async (t) => {
+  const home = await temporaryDirectory(t);
+  const env = { HOME: home, USERPROFILE: home };
+  const installed = jsonOutput(
+    runCli(["install", "--user", "--agents", "codex,claude-code", "--json"], { env }),
+  );
+  assert.equal(installed.targets.length, 2);
+  assert.equal(
+    await readFile(path.join(home, ".agents", "skills", "praxis-init", "SKILL.md"), "utf8").then(Boolean),
+    true,
+  );
+  assert.equal(
+    await readFile(path.join(home, ".claude", "skills", "praxis-init", "SKILL.md"), "utf8").then(Boolean),
+    true,
+  );
+  assert.equal(
+    await readFile(path.join(home, ".claude", "commands", "init.md"), "utf8").then(Boolean),
+    true,
   );
 });

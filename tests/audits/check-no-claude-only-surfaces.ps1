@@ -8,13 +8,26 @@ $allowed = @(
   '(^|/)references/scenarios/',
   '(^|/)references/templates/',
   '^docs/how/migrate-from-claude-code\.md$',
+  '^docs/how/install\.md$',
   '^docs/comparisons/claude-code-vs-codex-surfaces\.md$',
   '^docs/porting/coverage-matrix\.md$',
   '^docs/porting/source-inventory\.md$',
   '^docs/porting/codex-architecture\.md$',
   '^docs/porting/tool-dependencies\.md$',
+  '^docs/porting/surface-decisions\.md$',
+  '^distribution/manifest\.json$',
+  '^lib/agents\.mjs$',
+  '^lib/slash-commands\.mjs$',
+  '^lib/installer\.mjs$',
+  '^lib/prompt\.mjs$',
+  '^lib/output\.mjs$',
+  '^bin/praxis-skills\.mjs$',
+  '^tests/npm/',
   '^tests/audits/check-no-claude-only-surfaces\.ps1$',
-  '^verify-install\.ps1$'
+  '^verify-install\.ps1$',
+  '^README\.md$',
+  '^CHANGELOG\.md$',
+  '^AGENTS\.md$'
 )
 
 $violations = @()

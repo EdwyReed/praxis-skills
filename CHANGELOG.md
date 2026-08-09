@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Multi-agent installer: detect Codex, Claude Code, Cursor, and Grok homes; interactive multi-select on TTY; `--agents` / `--all-agents` for non-interactive runs.
+- Claude Code support: install skills into `~/.claude/skills` (and project `.claude/skills`) plus thin slash-command adapters under `commands/` that load Praxis skills without forking workflow logic.
+- New CLI command: `praxis-skills detect`.
+- Codex skill invocation remains the portable source of truth; non-interactive default without `--agents` stays Codex-only.
+
 ## v0.4.0-beta.4 - 2026-07-29
 
 - Added Praxis Clear Speech for replies, technical content, code text, and interface copy.
