@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.4.0-beta.5 - 2026-08-09
 
 - Multi-agent installer: detect Codex, Claude Code, Cursor, and Grok homes; interactive multi-select on TTY; `--agents` / `--all-agents` for non-interactive runs.
 - Claude Code support: install skills into `~/.claude/skills` (and project `.claude/skills`) plus thin slash-command adapters under `commands/` that load Praxis skills without forking workflow logic.
