@@ -273,9 +273,35 @@ Praxis does not impose one visual style and does not activate several competing 
 
 For visually significant work, the confirmed project profile selects exactly one primary visual skill. Repository rules and explicit user direction take precedence. React, shadcn, accessibility, performance, testing, and browser QA skills can supplement that direction because they own narrower technical responsibilities.
 
-TasteSkill-family skills are not bundled with Praxis. A project can prefer one through `.praxis/project.md` and record its reproducible source in `.praxis/skills.yaml`. If the exact applicable skill is unavailable, the agent asks before installing it.
+### Taste Skill ([tasteskill.dev](https://www.tasteskill.dev/))
 
-See [`references/rules/frontend-skill-routing.md`](references/rules/frontend-skill-routing.md) for the complete routing contract.
+Taste Skill is **not** bundled inside the Praxis npm payload. Praxis routes visual work to it by policy.
+
+| Behavior | Rule |
+|---|---|
+| Default primary (marketing / landing) | `design-taste-frontend` (**v2 experimental**) |
+| Missing Taste Skill | **Never blocks** the workflow |
+| Present applicable skill | **Must be loaded and used** |
+| Missing and applicable | Agent **offers** install proactively; wait for consent |
+| Optional installer | `praxis-skills install --with-taste-skill` installs the **full family** at the pin in `distribution/taste-skill.json` (default **off**) |
+
+```bash
+# Praxis only (default)
+npx praxis-skills@beta install --user --yes
+
+# Praxis + full Taste Skill family at pinned revision
+npx praxis-skills@beta install --user --with-taste-skill --yes
+```
+
+Upstream single-skill install (when you prefer their CLI):
+
+```bash
+npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-frontend"
+```
+
+A project can prefer one skill through `.praxis/project.md` and record the package pin in `.praxis/skills.yaml`.
+
+See [`references/rules/frontend-skill-routing.md`](references/rules/frontend-skill-routing.md) for the complete routing contract and install-name table.
 
 ## Repository structure
 

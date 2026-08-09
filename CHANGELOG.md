@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.0-beta.7 - 2026-08-09
+
+- Optional Taste Skill full-family install: `--with-taste-skill` / `--no-taste-skill` (default off). Interactive wizard asks with default no.
+- Pin catalog `distribution/taste-skill.json` for Leonxlnx/taste-skill at a fixed revision; default primary `design-taste-frontend` channel `v2-experimental`.
+- Installer clones the pinned revision and copies all Taste Skill install-name packages into each selected agent skills root. Writes `praxis-taste-skill.json` pin note and receipt `tasteSkill` metadata.
+- Frontend routing updated to current Taste Skill install names (`high-end-visual-design`, `stitch-design-taste`, `full-output-enforcement`, legacy `design-taste-frontend-v1`, image-gen skills). Removed invented `frontend-app-builder` requirement; documented out-of-scope fallback instead.
+- Gate policy: missing Taste Skill never blocks work; present applicable skill must be used; agent offers install proactively when missing.
+- Doctor checks Taste Skill family only when a receipt claims it was installed.
+- Audits and docs/README aligned with tasteskill.dev naming and pin.
+
 ## v0.4.0-beta.6 - 2026-08-09
 
 - Guided install TUI (zero-dependency, Clack-style): intro, radio for scope, checkbox multiselect for agents (↑↓ · space · a/n · enter), plan preview, confirm, and polished success outro.

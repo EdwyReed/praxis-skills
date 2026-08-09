@@ -11,7 +11,7 @@
 - Treat subagents as optional. Any workflow that can use subagents must also describe an inline fallback path.
 - Require a confirmed `.praxis/project.md` before project mutations. Use `praxis-init` to create, audit, refresh, or confirm it and record its validated SHA-256 in workflow state.
 - Keep external nonstandard project skill dependencies in optional `.praxis/skills.yaml`; never derive it from a contributor's complete installed inventory or install listed packages without explicit approval.
-- For visually significant frontend work, enforce `references/rules/frontend-skill-routing.md`: repository constraints come first, exactly one primary visual skill is selected, and installation always requires user consent.
+- For visually significant frontend work, enforce `references/rules/frontend-skill-routing.md`: repository constraints come first, exactly one primary visual skill is selected, missing Taste Skill never blocks work, present Taste Skill must be used, and installation always requires user consent. Optional full-family install: `praxis-skills install --with-taste-skill` (default off). Pin lives in `distribution/taste-skill.json` (default primary `design-taste-frontend`, channel `v2-experimental`).
 - Before reporting port completion, run `pwsh tests/audits/run-all.ps1` and record any dry-run limitations.
 
 ## Git and verification

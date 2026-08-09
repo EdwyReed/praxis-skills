@@ -27,6 +27,7 @@ Usage:
   praxis-skills install --user | --repo [path] | --target <skills-dir>
                         [--agents <id,id|all>] [--all-agents]
                         [--with-slash-commands | --no-slash-commands]
+                        [--with-taste-skill | --no-taste-skill]
                         [--commands-target <dir>]
                         [--force] [--dry-run] [--yes] [--json]
   praxis-skills doctor  (--user | --repo [path] | --target <skills-dir>)
@@ -38,17 +39,24 @@ Usage:
 
 Interactive install (default on a TTY):
   praxis-skills install
-    → guided UI: scope · agent checkboxes · plan · confirm
+    → guided UI: scope · agent checkboxes · optional Taste Skill · plan · confirm
 
 Automation:
   praxis-skills install --user --agents codex,claude-code --yes
+  praxis-skills install --user --with-taste-skill --yes
   Non-interactive default without --agents remains Codex-only.
+  Taste Skill full-family install is optional and default off.
 
 Agents:
   codex         ~/.agents/skills
   claude-code   ~/.claude/skills + slash-command adapters
   cursor        ~/.cursor/skills
   grok          ~/.grok/skills
+
+Taste Skill (optional):
+  --with-taste-skill   Install full pinned family from distribution/taste-skill.json
+  --no-taste-skill     Explicitly skip (default)
+  Pin + docs: https://www.tasteskill.dev/  (default primary: design-taste-frontend v2 experimental)
 `;
 
 function parseArguments(argv) {
@@ -66,6 +74,8 @@ function parseArguments(argv) {
     json: false,
     allAgents: false,
     slashCommands: undefined,
+    // Optional Taste Skill full-family install; default off unless --with-taste-skill.
+    tasteSkill: false,
   };
   while (argv.length) {
     const token = argv.shift();
@@ -77,6 +87,8 @@ function parseArguments(argv) {
     else if (token === "--all-agents") options.allAgents = true;
     else if (token === "--with-slash-commands") options.slashCommands = true;
     else if (token === "--no-slash-commands") options.slashCommands = false;
+    else if (token === "--with-taste-skill") options.tasteSkill = true;
+    else if (token === "--no-taste-skill") options.tasteSkill = false;
     else if (token === "--agents") {
       if (!argv.length || argv[0].startsWith("--")) throw new UsageError("--agents requires a value.");
       options.agents = argv.shift();
@@ -180,6 +192,7 @@ try {
       const wizard = await runInstallWizard(distribution, detections, {
         dryRun: options.dryRun,
         slashCommands: options.slashCommands,
+        tasteSkill: options.tasteSkill,
       });
       if (wizard.cancelled) {
         process.exitCode = 0;
@@ -189,6 +202,7 @@ try {
         if (wizard.scope === "user") options.user = true;
         if (wizard.scope === "repo") options.repo = wizard.repoPath || "";
         options.selectedAgents = wizard.selectedAgents;
+        options.tasteSkill = Boolean(wizard.tasteSkill);
         // Wizard already confirmed — avoid a second y/N for force replaces unless --force without prior confirm path
         options.yes = true;
         const targets = await resolveInstallTargets(distribution, options);

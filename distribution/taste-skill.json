@@ -1,0 +1,93 @@
+{
+  "schema": "praxis-taste-skill/v1",
+  "packageId": "leonxlnx-taste-skill",
+  "label": "Taste Skill",
+  "homepage": "https://www.tasteskill.dev/",
+  "docs": "https://www.tasteskill.dev/docs",
+  "repository": "https://github.com/Leonxlnx/taste-skill",
+  "revision": "e988add20dab0fa97d7a76781c48961c8184288e",
+  "channel": "v2-experimental",
+  "defaultPrimaryInstallName": "design-taste-frontend",
+  "installMode": "full-family",
+  "note": "design-taste-frontend is Taste Skill v2 experimental. Install name is stable; rule text may change until v2.0.0 stable.",
+  "skills": [
+    {
+      "folder": "taste-skill",
+      "installName": "design-taste-frontend",
+      "channel": "v2-experimental",
+      "role": "default-primary"
+    },
+    {
+      "folder": "taste-skill-v1",
+      "installName": "design-taste-frontend-v1",
+      "channel": "legacy-v1",
+      "role": "legacy-primary"
+    },
+    {
+      "folder": "gpt-tasteskill",
+      "installName": "gpt-taste",
+      "channel": "stable",
+      "role": "variant-primary"
+    },
+    {
+      "folder": "image-to-code-skill",
+      "installName": "image-to-code",
+      "channel": "stable",
+      "role": "variant-primary"
+    },
+    {
+      "folder": "redesign-skill",
+      "installName": "redesign-existing-projects",
+      "channel": "stable",
+      "role": "variant-primary"
+    },
+    {
+      "folder": "soft-skill",
+      "installName": "high-end-visual-design",
+      "channel": "stable",
+      "role": "style-primary"
+    },
+    {
+      "folder": "minimalist-skill",
+      "installName": "minimalist-ui",
+      "channel": "stable",
+      "role": "style-primary"
+    },
+    {
+      "folder": "brutalist-skill",
+      "installName": "industrial-brutalist-ui",
+      "channel": "stable",
+      "role": "style-primary"
+    },
+    {
+      "folder": "output-skill",
+      "installName": "full-output-enforcement",
+      "channel": "stable",
+      "role": "supplement"
+    },
+    {
+      "folder": "stitch-skill",
+      "installName": "stitch-design-taste",
+      "channel": "stable",
+      "role": "variant-primary"
+    },
+    {
+      "folder": "imagegen-frontend-web",
+      "installName": "imagegen-frontend-web",
+      "channel": "stable",
+      "role": "image-gen"
+    },
+    {
+      "folder": "imagegen-frontend-mobile",
+      "installName": "imagegen-frontend-mobile",
+      "channel": "stable",
+      "role": "image-gen"
+    },
+    {
+      "folder": "brandkit",
+      "installName": "brandkit",
+      "channel": "stable",
+      "role": "image-gen"
+    }
+  ]
+}

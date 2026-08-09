@@ -64,7 +64,7 @@ test("list --json returns the exact manifest-owned skill set", () => {
 
 test("version --json reports the beta package version", () => {
   const result = jsonOutput(runCli(["version", "--json"]));
-  assert.equal(result.version, "0.4.0-beta.6");
+  assert.equal(result.version, "0.4.0-beta.7");
 });
 
 test("user install uses the isolated home and writes a receipt", async (t) => {
@@ -73,10 +73,9 @@ test("user install uses the isolated home and writes a receipt", async (t) => {
   const installed = jsonOutput(runCli(["install", "--user", "--json"], { env }));
   assert.equal(installed.summary.copied, expectedSkills.length);
   const agentsRoot = path.join(home, ".agents");
-  assert.equal(
-    JSON.parse(await readFile(path.join(agentsRoot, "praxis-skills.json"), "utf8")).version,
-    "0.4.0-beta.6",
-  );
+  const receipt = JSON.parse(await readFile(path.join(agentsRoot, "praxis-skills.json"), "utf8"));
+  assert.equal(receipt.version, "0.4.0-beta.7");
+  assert.equal(receipt.tasteSkill, null);
   assert.equal(
     await readFile(path.join(agentsRoot, "skills", "praxis-init", "SKILL.md"), "utf8").then(Boolean),
     true,
@@ -97,7 +96,7 @@ test("repo install, doctor, and uninstall preserve unrelated content", async (t)
   );
   assert.equal(
     JSON.parse(await readFile(path.join(project, ".agents", "praxis-skills.json"), "utf8")).version,
-    "0.4.0-beta.6",
+    "0.4.0-beta.7",
   );
 
   const doctor = jsonOutput(runCli(["doctor", "--repo", project, "--json"]));
@@ -139,6 +138,33 @@ test("dry-run reports actions without mutating the target", async (t) => {
   assert.equal(result.dryRun, true);
   assert.equal(result.summary.copied, expectedSkills.length);
   await assert.rejects(readFile(path.join(target, "praxis-init", "SKILL.md"), "utf8"));
+});
+
+test("taste skill catalog pins design-taste-frontend v2 experimental", async () => {
+  const { loadTasteSkillCatalog, tasteSkillInstallNames } = await import("../../lib/taste-skill.mjs");
+  const catalog = await loadTasteSkillCatalog();
+  assert.equal(catalog.schema, "praxis-taste-skill/v1");
+  assert.equal(catalog.defaultPrimaryInstallName, "design-taste-frontend");
+  assert.equal(catalog.channel, "v2-experimental");
+  assert.ok(catalog.revision.length >= 7);
+  const names = tasteSkillInstallNames(catalog);
+  assert.ok(names.includes("high-end-visual-design"));
+  assert.ok(names.includes("stitch-design-taste"));
+  assert.ok(names.includes("design-taste-frontend-v1"));
+});
+
+test("taste skill dry-run plans full family without writing", async (t) => {
+  const target = path.join(await temporaryDirectory(t), "skills");
+  const result = jsonOutput(
+    runCli(["install", "--target", target, "--with-taste-skill", "--dry-run", "--json"]),
+  );
+  assert.equal(result.dryRun, true);
+  const taste = result.targets[0].tasteSkill;
+  assert.ok(taste);
+  assert.equal(taste.dryRun, true);
+  assert.equal(taste.channel, "v2-experimental");
+  assert.equal(taste.summary.copied + taste.summary.replaced + taste.summary.skipped, 13);
+  await assert.rejects(readFile(path.join(target, "design-taste-frontend", "SKILL.md"), "utf8"));
 });
 
 test("doctor fails when an installed skill is damaged", async (t) => {

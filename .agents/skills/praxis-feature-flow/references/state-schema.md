@@ -11,9 +11,11 @@ Required keys:
 Optional frontend gate:
 
 - `frontend.applicable`: boolean
-- `frontend.status`: `not-applicable`, `selected`, `prohibited`, `declined`, or `awaiting-install-consent`
-- `frontend.primary_skill`: string or null
+- `frontend.status`: `not-applicable`, `selected`, `prohibited`, `declined`, `awaiting-install-consent`, or `missing-continued`
+- `frontend.primary_skill`: install-name string or null (default marketing: `design-taste-frontend`)
+- `frontend.channel`: `v2-experimental`, `stable`, `legacy-v1`, or null
 - `frontend.rationale`: string or null
+- `frontend.taste_skill_offered`: boolean when an install offer was made
 
 Required project context acknowledgement:
 

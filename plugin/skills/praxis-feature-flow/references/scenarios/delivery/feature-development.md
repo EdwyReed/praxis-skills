@@ -100,10 +100,11 @@ Before Phase 2, Phase 3, or Phase 4 begins for visually significant frontend wor
 
 1. Load `references/rules/frontend-skill-routing.md`.
 2. Apply repository and user constraints first.
-3. Select and load exactly one applicable primary visual skill.
-4. Persist the selection in `state.json` and carry it through design, plan, implementation, and design review.
-5. If the exact applicable TasteSkill is unavailable, ask the user for installation consent before committing to a visual direction. Never install the full family automatically.
-6. Skip the gate for backend-only, non-visual, or minor in-system changes.
+3. Select exactly one applicable primary visual skill. Default marketing/landing primary is `design-taste-frontend` (Taste Skill v2 experimental).
+4. If the selected skill is present, load and follow it. Do not ignore an installed applicable Taste Skill.
+5. If the selected skill is missing, proactively offer to install the pinned Taste Skill full family (`praxis-skills install --with-taste-skill` or upstream install). Missing Taste Skill must not block the workflow. If the user declines, continue and record `frontend.status = declined` or `missing-continued`.
+6. Persist the selection in `state.json` and carry it through design, plan, implementation, and design review.
+7. Skip the gate for backend-only, non-visual, or minor in-system changes.
 
 This gate is independent of complexity. Small frontend tasks may use the fast track only after frontend routing is resolved.
 
