@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0-beta.6 - 2026-08-09
+
+- Guided install TUI (zero-dependency, Clack-style): intro, radio for scope, checkbox multiselect for agents (↑↓ · space · a/n · enter), plan preview, confirm, and polished success outro.
+- `praxis-skills install` with no flags launches the full wizard on a TTY.
+- Fix installer hang after completion by releasing raw-mode stdin.
+- Claude Code slash adapters are Praxis-prefixed (`/praxis-init`, `/praxis-feature`, …) to avoid colliding with native `/init`; unprefixed legacy command files are removed on install.
+
 ## v0.4.0-beta.5 - 2026-08-09
 
 - Multi-agent installer: detect Codex, Claude Code, Cursor, and Grok homes; interactive multi-select on TTY; `--agents` / `--all-agents` for non-interactive runs.

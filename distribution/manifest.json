@@ -1,7 +1,7 @@
 {
   "schema": "praxis-distribution/v1",
   "packageName": "praxis-skills",
-  "version": "0.4.0-beta.5",
+  "version": "0.4.0-beta.6",
   "payload": "plugin/skills",
   "sourceSkills": ".agents/skills",
   "receiptName": "praxis-skills.json",
@@ -60,11 +60,24 @@
       "id": "codex",
       "label": "Codex",
       "description": "OpenAI Codex / agents that load ~/.agents/skills and .agents/skills",
-      "detectHomes": [".agents", ".codex"],
-      "userSkillsRel": [".agents", "skills"],
-      "repoSkillsRel": [".agents", "skills"],
-      "userReceiptRel": [".agents"],
-      "repoReceiptRel": [".agents"],
+      "detectHomes": [
+        ".agents",
+        ".codex"
+      ],
+      "userSkillsRel": [
+        ".agents",
+        "skills"
+      ],
+      "repoSkillsRel": [
+        ".agents",
+        "skills"
+      ],
+      "userReceiptRel": [
+        ".agents"
+      ],
+      "repoReceiptRel": [
+        ".agents"
+      ],
       "slashCommands": false,
       "defaultSelected": true
     },
@@ -72,13 +85,31 @@
       "id": "claude-code",
       "label": "Claude Code",
       "description": "Anthropic Claude Code skills under ~/.claude/skills and .claude/skills, plus optional slash commands",
-      "detectHomes": [".claude"],
-      "userSkillsRel": [".claude", "skills"],
-      "repoSkillsRel": [".claude", "skills"],
-      "userCommandsRel": [".claude", "commands"],
-      "repoCommandsRel": [".claude", "commands"],
-      "userReceiptRel": [".claude"],
-      "repoReceiptRel": [".claude"],
+      "detectHomes": [
+        ".claude"
+      ],
+      "userSkillsRel": [
+        ".claude",
+        "skills"
+      ],
+      "repoSkillsRel": [
+        ".claude",
+        "skills"
+      ],
+      "userCommandsRel": [
+        ".claude",
+        "commands"
+      ],
+      "repoCommandsRel": [
+        ".claude",
+        "commands"
+      ],
+      "userReceiptRel": [
+        ".claude"
+      ],
+      "repoReceiptRel": [
+        ".claude"
+      ],
       "slashCommands": true,
       "defaultSelected": true
     },
@@ -86,11 +117,23 @@
       "id": "cursor",
       "label": "Cursor",
       "description": "Cursor Agent Skills under ~/.cursor/skills and .cursor/skills",
-      "detectHomes": [".cursor"],
-      "userSkillsRel": [".cursor", "skills"],
-      "repoSkillsRel": [".cursor", "skills"],
-      "userReceiptRel": [".cursor"],
-      "repoReceiptRel": [".cursor"],
+      "detectHomes": [
+        ".cursor"
+      ],
+      "userSkillsRel": [
+        ".cursor",
+        "skills"
+      ],
+      "repoSkillsRel": [
+        ".cursor",
+        "skills"
+      ],
+      "userReceiptRel": [
+        ".cursor"
+      ],
+      "repoReceiptRel": [
+        ".cursor"
+      ],
       "slashCommands": false,
       "defaultSelected": true
     },
@@ -98,105 +141,134 @@
       "id": "grok",
       "label": "Grok Build",
       "description": "xAI Grok Build skills under ~/.grok/skills",
-      "detectHomes": [".grok"],
-      "userSkillsRel": [".grok", "skills"],
-      "repoSkillsRel": [".agents", "skills"],
-      "userReceiptRel": [".grok"],
-      "repoReceiptRel": [".agents"],
+      "detectHomes": [
+        ".grok"
+      ],
+      "userSkillsRel": [
+        ".grok",
+        "skills"
+      ],
+      "repoSkillsRel": [
+        ".agents",
+        "skills"
+      ],
+      "userReceiptRel": [
+        ".grok"
+      ],
+      "repoReceiptRel": [
+        ".agents"
+      ],
       "slashCommands": false,
       "defaultSelected": true
     }
   ],
   "slashCommands": [
     {
-      "name": "init",
+      "name": "praxis-init",
       "skill": "praxis-init",
-      "description": "Initialize or audit Praxis project direction and skill dependencies",
+      "description": "Praxis: Initialize or audit Praxis project direction and skill dependencies",
       "argumentHint": "[refresh|audit]"
     },
     {
-      "name": "feature",
+      "name": "praxis-feature",
       "skill": "praxis-feature-flow",
-      "description": "Coordinate the full Praxis feature lifecycle with checkpoints and resume",
+      "description": "Praxis: Coordinate the full Praxis feature lifecycle with checkpoints and resume",
       "argumentHint": "[feature-id|task] [--status|--resume|--from path]"
     },
     {
-      "name": "refine",
+      "name": "praxis-refine",
       "skill": "praxis-refine",
-      "description": "Clarify a vague task into stories, acceptance criteria, risks, and estimate",
+      "description": "Praxis: Clarify a vague task into stories, acceptance criteria, risks, and estimate",
       "argumentHint": "[task] [--from path]"
     },
     {
-      "name": "research",
+      "name": "praxis-research",
       "skill": "praxis-research",
-      "description": "Produce facts-only AS-IS codebase research before proposing a solution",
+      "description": "Praxis: Produce facts-only AS-IS codebase research before proposing a solution",
       "argumentHint": "[feature-id|focus]"
     },
     {
-      "name": "design",
+      "name": "praxis-design",
       "skill": "praxis-design",
-      "description": "Create architecture, diagrams, ADRs, API contracts, and challenge review",
+      "description": "Praxis: Create architecture, diagrams, ADRs, API contracts, and challenge review",
       "argumentHint": "[feature-id|change]"
     },
     {
-      "name": "plan",
+      "name": "praxis-plan",
       "skill": "praxis-plan",
-      "description": "Decompose design into vertical implementation phases with TDD criteria",
+      "description": "Praxis: Decompose design into vertical implementation phases with TDD criteria",
       "argumentHint": "[feature-id]"
     },
     {
-      "name": "implement",
+      "name": "praxis-implement",
       "skill": "praxis-implement",
-      "description": "Implement one planned phase with writer, reviewer, and quality gate roles",
+      "description": "Praxis: Implement one planned phase with writer, reviewer, and quality gate roles",
       "argumentHint": "[feature-id] [phase]"
     },
     {
-      "name": "pr",
+      "name": "praxis-pr",
       "skill": "praxis-pr",
-      "description": "Prepare or create a pull request from workflow artifacts and evidence",
+      "description": "Praxis: Prepare or create a pull request from workflow artifacts and evidence",
       "argumentHint": "[feature-id]"
     },
     {
-      "name": "docs-suite",
+      "name": "praxis-docs-suite",
       "skill": "praxis-docs-suite",
-      "description": "Generate or update the project documentation suite",
+      "description": "Praxis: Generate or update the project documentation suite",
       "argumentHint": "[scope]"
     },
     {
-      "name": "sentry-triage",
+      "name": "praxis-sentry-triage",
       "skill": "praxis-sentry-triage",
-      "description": "Triage Sentry issues into grouped tasks for feature flow",
+      "description": "Praxis: Triage Sentry issues into grouped tasks for feature flow",
       "argumentHint": "[project] [org]"
     },
     {
-      "name": "qa-checklist",
+      "name": "praxis-qa-checklist",
       "skill": "praxis-qa-checklist",
-      "description": "Generate a structured, coverage-driven QA checklist",
+      "description": "Praxis: Generate a structured, coverage-driven QA checklist",
       "argumentHint": "[feature|url|artifact]"
     },
     {
-      "name": "system-profile",
+      "name": "praxis-system-profile",
       "skill": "praxis-system-profile",
-      "description": "Build a business-technical system integration profile",
+      "description": "Praxis: Build a business-technical system integration profile",
       "argumentHint": "[scope]"
     },
     {
-      "name": "skill-from-git",
+      "name": "praxis-skill-from-git",
       "skill": "praxis-skill-from-git",
-      "description": "Extract repository conventions from git history into a project skill",
+      "description": "Praxis: Extract repository conventions from git history into a project skill",
       "argumentHint": "[project-name]"
     },
     {
-      "name": "ai-debug",
+      "name": "praxis-ai-debug",
       "skill": "praxis-ai-debug",
-      "description": "Inspect Praxis package, install, MCP, and workflow health",
+      "description": "Praxis: Inspect Praxis package, install, MCP, and workflow health",
       "argumentHint": ""
     },
     {
-      "name": "clear-speech",
+      "name": "praxis-clear-speech",
       "skill": "praxis-clear-speech",
-      "description": "Write or audit clear technical speech and interface copy",
+      "description": "Praxis: Write or audit clear technical speech and interface copy",
       "argumentHint": "[path|--audit]"
     }
+  ],
+  "legacySlashCommands": [
+    "init",
+    "feature",
+    "refine",
+    "research",
+    "design",
+    "plan",
+    "implement",
+    "pr",
+    "docs-suite",
+    "sentry-triage",
+    "qa-checklist",
+    "system-profile",
+    "skill-from-git",
+    "ai-debug",
+    "clear-speech"
   ]
 }

@@ -10,36 +10,45 @@ import {
   UsageError,
 } from "../lib/installer.mjs";
 import { printError, printResult } from "../lib/output.mjs";
-import { promptAgentSelection, promptYesNo } from "../lib/prompt.mjs";
+import {
+  printDoctorExperience,
+  printInstallExperience,
+  promptAgentSelection,
+  promptYesNo,
+  runInstallWizard,
+  supportsInteractiveUi,
+} from "../lib/prompt.mjs";
+import { intro, outro, printErrorPretty, releaseStdin, S, c } from "../lib/ui.mjs";
 
 const help = `Praxis Skills
 
 Usage:
-  praxis-skills list [--json]
-  praxis-skills version [--json]
-  praxis-skills detect [--json]
-  praxis-skills install (--user | --repo [path] | --target <skills-dir>)
+  praxis-skills install
+  praxis-skills install --user | --repo [path] | --target <skills-dir>
                         [--agents <id,id|all>] [--all-agents]
                         [--with-slash-commands | --no-slash-commands]
                         [--commands-target <dir>]
                         [--force] [--dry-run] [--yes] [--json]
-  praxis-skills doctor (--user | --repo [path] | --target <skills-dir>)
-                       [--agents <id,id|all>] [--all-agents] [--json]
+  praxis-skills doctor  (--user | --repo [path] | --target <skills-dir>)
+                        [--agents <id,id|all>] [--all-agents] [--json]
   praxis-skills uninstall (--user | --repo [path] | --target <skills-dir>)
                           [--agents <id,id|all>] [--all-agents]
                           [--dry-run] [--yes] [--json]
+  praxis-skills list | version | detect [--json]
+
+Interactive install (default on a TTY):
+  praxis-skills install
+    → guided UI: scope · agent checkboxes · plan · confirm
+
+Automation:
+  praxis-skills install --user --agents codex,claude-code --yes
+  Non-interactive default without --agents remains Codex-only.
 
 Agents:
-  codex         ~/.agents/skills  (Codex skill discovery; default)
-  claude-code   ~/.claude/skills + ~/.claude/commands  (skills + slash adapters)
+  codex         ~/.agents/skills
+  claude-code   ~/.claude/skills + slash-command adapters
   cursor        ~/.cursor/skills
   grok          ~/.grok/skills
-
-Notes:
-  - Interactive install (TTY, no --agents/--yes/--json) asks which detected agents to target.
-  - Non-interactive default without --agents is Codex only (backward compatible).
-  - Slash commands are thin adapters that load the matching Praxis skill. Codex keeps skill invocation.
-  - Existing targets are skipped unless --force (with confirmation or --yes).
 `;
 
 function parseArguments(argv) {
@@ -98,7 +107,27 @@ function parseArguments(argv) {
   if (options.allAgents && options.agents) {
     throw new UsageError("Use either --agents or --all-agents, not both.");
   }
+  const selectorCount = [options.user, options.repo !== undefined, options.target !== undefined].filter(Boolean).length;
+  if (selectorCount > 1) {
+    throw new UsageError("Choose exactly one target selector: --user, --repo [path], or --target <skills-dir>.");
+  }
   return options;
+}
+
+function hasExplicitTarget(options) {
+  return options.user || options.repo !== undefined || options.target !== undefined;
+}
+
+function canRunGuidedInstall(options) {
+  return (
+    options.command === "install" &&
+    !hasExplicitTarget(options) &&
+    !options.agents &&
+    !options.allAgents &&
+    !options.yes &&
+    !options.json &&
+    supportsInteractiveUi()
+  );
 }
 
 function needsInteractiveAgentPrompt(options) {
@@ -106,7 +135,11 @@ function needsInteractiveAgentPrompt(options) {
   if (options.target !== undefined) return false;
   if (options.agents || options.allAgents) return false;
   if (options.yes || options.json) return false;
-  return process.stdin.isTTY && process.stdout.isTTY;
+  return supportsInteractiveUi();
+}
+
+function usePrettyHumanOutput(options) {
+  return !options.json && supportsInteractiveUi();
 }
 
 let options = { json: process.argv.includes("--json") };
@@ -115,11 +148,13 @@ try {
   if (!options.json && process.stdin.isTTY && process.stdout.isTTY) {
     options.confirm = async (message) => promptYesNo(message);
   }
+
   if (options.command === "help") {
     process.stdout.write(help);
   } else {
     const distribution = await loadDistribution();
     let result;
+    let prettyHandled = false;
 
     if (options.command === "list") {
       result = { command: "list", skills: distribution.skills };
@@ -127,27 +162,82 @@ try {
       result = { command: "version", version: distribution.version };
     } else if (options.command === "detect") {
       result = { command: "detect", agents: await detectAgents(distribution) };
+      if (usePrettyHumanOutput(options)) {
+        intro("Praxis Skills", { version: distribution.version });
+        for (const agent of result.agents) {
+          const mark = agent.detected ? `${c.green}detected${c.reset}` : `${c.gray}missing ${c.reset}`;
+          process.stdout.write(
+            `${S.bar}  ${mark}  ${c.bold}${agent.label.padEnd(12)}${c.reset}  ${c.dim}${agent.paths.userSkills}${c.reset}\n`,
+          );
+        }
+        outro("Detection complete.", {
+          hint: "Run: praxis-skills install",
+        });
+        prettyHandled = true;
+      }
+    } else if (canRunGuidedInstall(options)) {
+      const detections = await detectAgents(distribution);
+      const wizard = await runInstallWizard(distribution, detections, {
+        dryRun: options.dryRun,
+        slashCommands: options.slashCommands,
+      });
+      if (wizard.cancelled) {
+        process.exitCode = 0;
+        prettyHandled = true;
+        result = { command: "install", cancelled: true };
+      } else {
+        if (wizard.scope === "user") options.user = true;
+        if (wizard.scope === "repo") options.repo = wizard.repoPath || "";
+        options.selectedAgents = wizard.selectedAgents;
+        // Wizard already confirmed — avoid a second y/N for force replaces unless --force without prior confirm path
+        options.yes = true;
+        const targets = await resolveInstallTargets(distribution, options);
+        result = await installMany(distribution, targets, options);
+        prettyHandled = printInstallExperience(result, { version: distribution.version });
+      }
     } else {
-      const selectors = [options.user, options.repo !== undefined, options.target !== undefined].filter(Boolean);
-      if (selectors.length !== 1) {
-        throw new UsageError("Choose exactly one target selector: --user, --repo [path], or --target <skills-dir>.");
+      if (!hasExplicitTarget(options)) {
+        throw new UsageError(
+          "Choose a target: run `praxis-skills install` on a TTY, or pass --user / --repo [path] / --target <dir>.",
+        );
       }
 
       if (needsInteractiveAgentPrompt(options)) {
         const detections = await detectAgents(distribution);
-        options.selectedAgents = await promptAgentSelection(detections);
+        options.selectedAgents = await promptAgentSelection(detections, {
+          version: distribution.version,
+        });
       }
 
       const targets = await resolveInstallTargets(distribution, options);
-      if (options.command === "install") result = await installMany(distribution, targets, options);
-      if (options.command === "uninstall") result = await uninstallMany(distribution, targets, options);
-      if (options.command === "doctor") result = await doctorMany(distribution, targets);
+      if (options.command === "install") {
+        result = await installMany(distribution, targets, options);
+        if (usePrettyHumanOutput(options)) {
+          prettyHandled = printInstallExperience(result, { version: distribution.version });
+        }
+      }
+      if (options.command === "uninstall") {
+        result = await uninstallMany(distribution, targets, options);
+      }
+      if (options.command === "doctor") {
+        result = await doctorMany(distribution, targets);
+        if (usePrettyHumanOutput(options)) {
+          prettyHandled = printDoctorExperience(result);
+        }
+      }
     }
 
-    printResult(result, options.json);
-    if (options.command === "doctor" && !result.healthy) process.exitCode = 1;
+    if (!prettyHandled) printResult(result, options.json);
+    if (options.command === "doctor" && result && !result.healthy) process.exitCode = 1;
   }
+  // Interactive raw-mode prompts resume stdin; release it so the CLI process can exit.
+  releaseStdin();
+  if (process.exitCode && process.exitCode !== 0) process.exit(process.exitCode);
+  process.exit(0);
 } catch (error) {
-  printError(error, options.json);
-  process.exitCode = error.exitCode ?? 1;
+  releaseStdin();
+  if (options.json) printError(error, true);
+  else if (supportsInteractiveUi()) printErrorPretty(error instanceof Error ? error.message : String(error));
+  else printError(error, false);
+  process.exit(error.exitCode ?? 1);
 }

@@ -9,7 +9,13 @@ npx praxis-skills@beta install --user
 npx praxis-skills@beta doctor --user
 ```
 
-On an interactive TTY, `install --user` (without `--agents` / `--yes` / `--json`) detects known coding-agent homes and asks which agents should receive the package. Non-interactive runs without `--agents` install **Codex only** for backward compatibility.
+On an interactive TTY, prefer the guided installer:
+
+```bash
+npx praxis-skills@beta install
+```
+
+It walks through scope (user-global vs this repo), agent checkboxes (arrow keys · space · enter), a plan summary, and confirm — no comma-separated number lists. You can still pass `--user` / `--repo` to skip the scope step; agent checkboxes still appear unless `--agents` / `--yes` / `--json` is set. Non-interactive runs without `--agents` install **Codex only** for backward compatibility.
 
 Detect agents without installing:
 
@@ -37,7 +43,7 @@ Supported agents:
 | Agent id | Skills path (user) | Extra surfaces |
 |---|---|---|
 | `codex` | `~/.agents/skills` | Codex / AGENTS skill discovery |
-| `claude-code` | `~/.claude/skills` | Slash commands in `~/.claude/commands` (`/feature`, `/refine`, …) that load the matching Praxis skill |
+| `claude-code` | `~/.claude/skills` | Slash commands in `~/.claude/commands` as **`/praxis-*`** (`/praxis-feature`, `/praxis-init`, …) that load the matching Praxis skill |
 | `cursor` | `~/.cursor/skills` | Cursor Agent Skills |
 | `grok` | `~/.grok/skills` | Grok Build skills |
 

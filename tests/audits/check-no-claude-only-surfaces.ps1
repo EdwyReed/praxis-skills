@@ -20,6 +20,7 @@ $allowed = @(
   '^lib/slash-commands\.mjs$',
   '^lib/installer\.mjs$',
   '^lib/prompt\.mjs$',
+  '^lib/ui\.mjs$',
   '^lib/output\.mjs$',
   '^bin/praxis-skills\.mjs$',
   '^tests/npm/',

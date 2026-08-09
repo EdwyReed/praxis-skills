@@ -182,17 +182,18 @@ Sentry, Context7, and OpenAI documentation MCP servers are optional. The workflo
 
 The current release channel is `beta`. Use the explicit tag so `npx` selects the newest prerelease.
 
-Install Praxis for all repositories available to your user account:
+Guided install (recommended on a real terminal):
+
+```bash
+npx praxis-skills@beta install
+```
+
+Arrow keys, checkboxes, plan preview, confirm. Non-interactive / CI runs without `--agents` still install **Codex only**.
+
+Scripted targets:
 
 ```bash
 npx praxis-skills@beta install --user
-```
-
-On an interactive terminal, the installer detects known agent homes (Codex, Claude Code, Cursor, Grok) and asks which ones to target. Non-interactive runs without `--agents` install **Codex only**.
-
-Install into one repository:
-
-```bash
 npx praxis-skills@beta install --repo .
 ```
 
@@ -205,7 +206,7 @@ npx praxis-skills@beta install --user --agents claude-code   # skills + /feature
 npx praxis-skills@beta install --repo . --agents cursor,grok
 ```
 
-Claude Code receives both skill packages under `~/.claude/skills` (or `.claude/skills`) and thin slash-command adapters under `commands/` (`/feature`, `/refine`, `/research`, …). Each adapter loads the matching `praxis-*` skill; workflow logic is not duplicated. Codex skill invocation is unchanged.
+Claude Code receives both skill packages under `~/.claude/skills` (or `.claude/skills`) and thin **Praxis-prefixed** slash-command adapters under `commands/` (`/praxis-feature`, `/praxis-init`, `/praxis-research`, …). Prefixing avoids collisions with Claude built-ins such as `/init`. Each adapter loads the matching `praxis-*` skill; workflow logic is not duplicated. Codex skill invocation is unchanged.
 
 The CLI supports `install`, `doctor`, `uninstall`, `detect`, `list`, and `version`. It builds an exact plan from `distribution/manifest.json`, owns only the listed Praxis directories, and preserves unrelated skills. Existing targets are skipped unless `--force` is used. Destructive operations require confirmation or an explicit `--yes`; use `--dry-run` to preview them.
 

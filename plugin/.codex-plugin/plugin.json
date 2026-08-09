@@ -1,6 +1,6 @@
 {
   "name": "praxis-skills",
-  "version": "0.4.0-beta.5",
+  "version": "0.4.0-beta.6",
   "description": "Codex-native workflow package with project direction, clear technical writing, reproducible skill dependencies, feature delivery, QA, documentation, and PR preparation.",
   "author": {
     "name": "EdwyReed"

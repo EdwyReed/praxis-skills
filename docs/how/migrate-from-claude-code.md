@@ -21,23 +21,25 @@ Codex remains available in parallel:
 npx praxis-skills@beta install --user --agents codex,claude-code
 ```
 
-| Slash command | Praxis skill (source of truth) |
+| Slash command (prefixed) | Praxis skill (source of truth) |
 | --- | --- |
-| `/init` | `praxis-init` |
-| `/feature` | `praxis-feature-flow` |
-| `/refine` | `praxis-refine` |
-| `/research` | `praxis-research` |
-| `/design` | `praxis-design` |
-| `/plan` | `praxis-plan` |
-| `/implement` | `praxis-implement` |
-| `/docs-suite` | `praxis-docs-suite` |
-| `/pr` | `praxis-pr` |
-| `/sentry-triage` | `praxis-sentry-triage` |
-| `/qa-checklist` | `praxis-qa-checklist` |
-| `/system-profile` | `praxis-system-profile` |
-| `/skill-from-git` | `praxis-skill-from-git` |
-| `/ai-debug` | `praxis-ai-debug` |
-| `/clear-speech` | `praxis-clear-speech` |
+| `/praxis-init` | `praxis-init` |
+| `/praxis-feature` | `praxis-feature-flow` |
+| `/praxis-refine` | `praxis-refine` |
+| `/praxis-research` | `praxis-research` |
+| `/praxis-design` | `praxis-design` |
+| `/praxis-plan` | `praxis-plan` |
+| `/praxis-implement` | `praxis-implement` |
+| `/praxis-docs-suite` | `praxis-docs-suite` |
+| `/praxis-pr` | `praxis-pr` |
+| `/praxis-sentry-triage` | `praxis-sentry-triage` |
+| `/praxis-qa-checklist` | `praxis-qa-checklist` |
+| `/praxis-system-profile` | `praxis-system-profile` |
+| `/praxis-skill-from-git` | `praxis-skill-from-git` |
+| `/praxis-ai-debug` | `praxis-ai-debug` |
+| `/praxis-clear-speech` | `praxis-clear-speech` |
+
+Unprefixed names (`/init`, `/feature`, …) are intentionally not installed — they collide with Claude Code built-ins. The installer removes those legacy adapters if present.
 
 Slash commands do not re-implement workflows. They route into the skill package. Codex skill invocation (`$praxis-feature-flow` / skill discovery) stays first-class.
 

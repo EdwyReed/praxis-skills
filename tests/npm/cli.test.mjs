@@ -64,7 +64,7 @@ test("list --json returns the exact manifest-owned skill set", () => {
 
 test("version --json reports the beta package version", () => {
   const result = jsonOutput(runCli(["version", "--json"]));
-  assert.equal(result.version, "0.4.0-beta.5");
+  assert.equal(result.version, "0.4.0-beta.6");
 });
 
 test("user install uses the isolated home and writes a receipt", async (t) => {
@@ -75,7 +75,7 @@ test("user install uses the isolated home and writes a receipt", async (t) => {
   const agentsRoot = path.join(home, ".agents");
   assert.equal(
     JSON.parse(await readFile(path.join(agentsRoot, "praxis-skills.json"), "utf8")).version,
-    "0.4.0-beta.5",
+    "0.4.0-beta.6",
   );
   assert.equal(
     await readFile(path.join(agentsRoot, "skills", "praxis-init", "SKILL.md"), "utf8").then(Boolean),
@@ -97,7 +97,7 @@ test("repo install, doctor, and uninstall preserve unrelated content", async (t)
   );
   assert.equal(
     JSON.parse(await readFile(path.join(project, ".agents", "praxis-skills.json"), "utf8")).version,
-    "0.4.0-beta.5",
+    "0.4.0-beta.6",
   );
 
   const doctor = jsonOutput(runCli(["doctor", "--repo", project, "--json"]));
@@ -155,11 +155,26 @@ test("invalid target selector combinations exit with usage status", async (t) =>
   const target = path.join(await temporaryDirectory(t), "skills");
   const result = runCli(["install", "--user", "--target", target, "--json"]);
   assert.equal(result.status, 2);
-  assert.match(result.stderr, /one target selector/i);
+  assert.match(result.stderr, /exactly one target selector|Choose exactly one target/i);
 
   const listResult = runCli(["list", "--target", target, "--json"]);
   assert.equal(listResult.status, 2);
   assert.match(listResult.stderr, /not valid for list/i);
+});
+
+test("non-interactive install without target explains how to proceed", () => {
+  const result = runCli(["install", "--json"], {
+    env: { CI: "1", FORCE_COLOR: "0" },
+  });
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /--user|TTY|install/i);
+});
+
+test("ui formatPath collapses home prefixes", async () => {
+  const { formatPath } = await import("../../lib/ui.mjs");
+  const home = process.env.USERPROFILE || process.env.HOME;
+  if (!home) return;
+  assert.equal(formatPath(path.join(home, ".agents", "skills")).startsWith("~"), true);
 });
 
 test("distribution validation rejects path traversal skill names", () => {
@@ -211,15 +226,19 @@ test("claude-code user install writes skills and slash-command adapters", async 
   assert.equal(installed.summary.commandsWritten, 15);
 
   const skill = path.join(home, ".claude", "skills", "praxis-feature-flow", "SKILL.md");
-  const command = path.join(home, ".claude", "commands", "feature.md");
+  const command = path.join(home, ".claude", "commands", "praxis-feature.md");
   assert.equal(await readFile(skill, "utf8").then(Boolean), true);
   const commandBody = await readFile(command, "utf8");
   assert.match(commandBody, /praxis-feature-flow/);
+  assert.match(commandBody, /\/praxis-feature/);
   assert.match(commandBody, /\$ARGUMENTS/);
+  // Unprefixed names must not be installed (they collide with Claude natives like /init).
+  await assert.rejects(readFile(path.join(home, ".claude", "commands", "init.md"), "utf8"));
+  await assert.rejects(readFile(path.join(home, ".claude", "commands", "feature.md"), "utf8"));
 
   const receipt = JSON.parse(await readFile(path.join(home, ".claude", "praxis-skills.json"), "utf8"));
   assert.equal(receipt.agent, "claude-code");
-  assert.equal(receipt.slashCommands.includes("feature"), true);
+  assert.equal(receipt.slashCommands.includes("praxis-feature"), true);
 
   const doctor = jsonOutput(runCli(["doctor", "--user", "--agents", "claude-code", "--json"], { env }));
   assert.equal(doctor.healthy, true);
@@ -247,7 +266,21 @@ test("multi-agent install can target codex and claude-code together", async (t) 
     true,
   );
   assert.equal(
-    await readFile(path.join(home, ".claude", "commands", "init.md"), "utf8").then(Boolean),
+    await readFile(path.join(home, ".claude", "commands", "praxis-init.md"), "utf8").then(Boolean),
     true,
   );
+});
+
+test("claude install removes unprefixed legacy slash commands", async (t) => {
+  const home = await temporaryDirectory(t);
+  const env = { HOME: home, USERPROFILE: home };
+  const commandsRoot = path.join(home, ".claude", "commands");
+  await mkdir(commandsRoot, { recursive: true });
+  await writeFile(path.join(commandsRoot, "init.md"), "# legacy\n");
+  await writeFile(path.join(commandsRoot, "feature.md"), "# legacy\n");
+
+  jsonOutput(runCli(["install", "--user", "--agents", "claude-code", "--json"], { env }));
+  await assert.rejects(readFile(path.join(commandsRoot, "init.md"), "utf8"));
+  await assert.rejects(readFile(path.join(commandsRoot, "feature.md"), "utf8"));
+  assert.equal(await readFile(path.join(commandsRoot, "praxis-init.md"), "utf8").then(Boolean), true);
 });

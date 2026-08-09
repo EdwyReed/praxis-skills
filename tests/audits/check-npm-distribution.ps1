@@ -18,6 +18,12 @@ foreach ($command in $distribution.slashCommands) {
   if ($distribution.skills -notcontains $command.skill) {
     throw "Slash command $($command.name) references unknown skill $($command.skill)"
   }
+  if ($command.name -notlike 'praxis-*') {
+    throw "Slash command must be Praxis-prefixed: $($command.name)"
+  }
+}
+if (-not $distribution.legacySlashCommands) {
+  throw "Distribution manifest missing legacySlashCommands for unprefixed cleanup"
 }
 
 $lifecycleNames = @("preinstall", "install", "postinstall", "prepublish", "prepublishOnly", "prepare")
