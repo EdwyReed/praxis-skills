@@ -10,7 +10,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 test("package metadata has no dependencies or lifecycle scripts", async () => {
   const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
   assert.equal(packageJson.name, "praxis-skills");
-  assert.equal(packageJson.version, "0.4.0-beta.7");
+  assert.equal(packageJson.version, "0.4.0-beta.8");
   assert.equal(packageJson.dependencies, undefined);
   for (const name of ["preinstall", "install", "postinstall", "prepublish", "prepublishOnly", "prepare"]) {
     assert.equal(packageJson.scripts[name], undefined, `unexpected lifecycle script: ${name}`);

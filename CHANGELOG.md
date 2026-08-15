@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.0-beta.8 - 2026-08-15
+
+- Set npm package `homepage` to https://praxis.velryx.cc (public marketing and docs site).
+
 ## v0.4.0-beta.7 - 2026-08-09
 
 - Optional Taste Skill full-family install: `--with-taste-skill` / `--no-taste-skill` (default off). Interactive wizard asks with default no.

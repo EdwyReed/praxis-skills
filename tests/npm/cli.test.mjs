@@ -64,7 +64,7 @@ test("list --json returns the exact manifest-owned skill set", () => {
 
 test("version --json reports the beta package version", () => {
   const result = jsonOutput(runCli(["version", "--json"]));
-  assert.equal(result.version, "0.4.0-beta.7");
+  assert.equal(result.version, "0.4.0-beta.8");
 });
 
 test("user install uses the isolated home and writes a receipt", async (t) => {
@@ -74,7 +74,7 @@ test("user install uses the isolated home and writes a receipt", async (t) => {
   assert.equal(installed.summary.copied, expectedSkills.length);
   const agentsRoot = path.join(home, ".agents");
   const receipt = JSON.parse(await readFile(path.join(agentsRoot, "praxis-skills.json"), "utf8"));
-  assert.equal(receipt.version, "0.4.0-beta.7");
+  assert.equal(receipt.version, "0.4.0-beta.8");
   assert.equal(receipt.tasteSkill, null);
   assert.equal(
     await readFile(path.join(agentsRoot, "skills", "praxis-init", "SKILL.md"), "utf8").then(Boolean),
@@ -96,7 +96,7 @@ test("repo install, doctor, and uninstall preserve unrelated content", async (t)
   );
   assert.equal(
     JSON.parse(await readFile(path.join(project, ".agents", "praxis-skills.json"), "utf8")).version,
-    "0.4.0-beta.7",
+    "0.4.0-beta.8",
   );
 
   const doctor = jsonOutput(runCli(["doctor", "--repo", project, "--json"]));
